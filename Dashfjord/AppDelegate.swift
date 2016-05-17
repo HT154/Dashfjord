@@ -37,8 +37,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: #selector(AppDelegate.handleURLEvent(_:withReplyEvent:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
         
-        API.OAuthConsumerKey = ""
-        API.OAuthConsumerSecret = ""
+        API.OAuthConsumerKey = "<consumer_key>"
+        API.OAuthConsumerSecret = "<consumer_secret>"
         
         if let (token, tokenSecret) = retrieveTokens() {
             API.OAuthToken = token
@@ -48,8 +48,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             authWindowController.showWindow(nil)
         }
-        
-//        Font.printAll()
     }
     
     func authorize() {
