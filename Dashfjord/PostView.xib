@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
+        <capability name="stacking Non-gravity area distributions on NSStackView" minToolsVersion="7.0" minSystemVersion="10.11"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" id="nC1-5x-mE8" customClass="PostView" customModule="Dashfjord" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="664" height="125"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <customView verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="OGo-Tl-K1f">
+                    <rect key="frame" x="104" y="0.0" width="560" height="125"/>
+                    <subviews>
+                        <textField horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="jPL-7l-5e2">
+                            <rect key="frame" x="6" y="61" width="288" height="56"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="284" id="6qm-P1-dom"/>
+                            </constraints>
+                            <textFieldCell key="cell" controlSize="mini" sendsActionOnEndEditing="YES" id="r79-3e-VrA">
+                                <font key="font" metaFont="smallSystem"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <stackView distribution="equalSpacing" orientation="vertical" alignment="centerX" spacing="0.0" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JIk-b9-o1z" customClass="PostStackView" customModule="Dashfjord" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="540" height="125"/>
+                            <subviews>
+                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe">
+                                    <rect key="frame" x="0.0" y="80" width="540" height="45"/>
+                                    <subviews>
+                                        <button horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Uvl-Vr-VnR" customClass="TextTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="20" y="4" width="47" height="41"/>
+                                            <buttonCell key="cell" type="bevel" title="Poster" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="M4T-Ml-zgk">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="systemBold"/>
+                                            </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                                    <color key="value" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                    <real key="value" value="13"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="bold" value="YES"/>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="openBlog:" target="nC1-5x-mE8" id="qAv-1b-bji"/>
+                                            </connections>
+                                        </button>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AaP-sx-U6d" customClass="ImageTintView" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="67" y="11" width="20" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="ceQ-BY-wFX"/>
+                                                <constraint firstAttribute="height" constant="20" id="uQQ-Uc-XFf"/>
+                                            </constraints>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="reblog" id="5O7-k5-FBN"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="inactiveTint">
+                                                    <color key="value" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="activeTint">
+                                                    <color key="value" red="0.62745098040000002" green="0.62745098040000002" blue="0.62745098040000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </imageView>
+                                        <button translatesAutoresizingMaskIntoConstraints="NO" id="wsL-nO-oI0" customClass="PermalinkButton" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="524" y="29" width="16" height="16"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="16" id="6Gp-3F-bal"/>
+                                                <constraint firstAttribute="height" constant="16" id="6kH-RF-nYY"/>
+                                            </constraints>
+                                            <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" imagePosition="only" alignment="center" imageScaling="proportionallyUpOrDown" inset="2" id="mo3-q0-tHh">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="clickPermalinkButton:" target="nC1-5x-mE8" id="2fu-gO-A3Q"/>
+                                            </connections>
+                                        </button>
+                                        <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="B07-q4-tlR" customClass="TextTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="87" y="4" width="61" height="41"/>
+                                            <buttonCell key="cell" type="bevel" title="Reblogee" bezelStyle="rounded" alignment="left" imageScaling="proportionallyDown" inset="2" id="JI0-Nc-lcl">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="boolean" keyPath="bold" value="YES"/>
+                                                <userDefinedRuntimeAttribute type="color" keyPath="color">
+                                                    <color key="value" red="0.62745098039215685" green="0.62745098039215685" blue="0.62745098039215685" alpha="1" colorSpace="calibratedRGB"/>
+                                                </userDefinedRuntimeAttribute>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="fontSize">
+                                                    <real key="value" value="13"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                            <connections>
+                                                <action selector="clickReblogNameButton:" target="nC1-5x-mE8" id="qRo-hF-p9G"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Uvl-Vr-VnR" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="82B-k1-0ij"/>
+                                        <constraint firstItem="AaP-sx-U6d" firstAttribute="centerY" secondItem="c22-O7-iKe" secondAttribute="centerY" constant="1" id="Ecg-Xm-1lq"/>
+                                        <constraint firstItem="B07-q4-tlR" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="IZC-wx-6OX"/>
+                                        <constraint firstAttribute="bottom" secondItem="Uvl-Vr-VnR" secondAttribute="bottom" constant="4" id="Zrx-rJ-71f"/>
+                                        <constraint firstItem="wsL-nO-oI0" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="fLw-gQ-Ach"/>
+                                        <constraint firstAttribute="bottom" secondItem="B07-q4-tlR" secondAttribute="bottom" constant="4" id="lHB-bM-8UT"/>
+                                        <constraint firstItem="B07-q4-tlR" firstAttribute="leading" secondItem="AaP-sx-U6d" secondAttribute="trailing" id="sGl-EJ-Uuo"/>
+                                        <constraint firstItem="Uvl-Vr-VnR" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" id="sIq-Mn-kMi"/>
+                                        <constraint firstAttribute="trailing" secondItem="wsL-nO-oI0" secondAttribute="trailing" id="tIq-Vz-9qU"/>
+                                        <constraint firstItem="AaP-sx-U6d" firstAttribute="leading" secondItem="Uvl-Vr-VnR" secondAttribute="trailing" id="uQ0-tk-drT"/>
+                                        <constraint firstAttribute="height" constant="45" id="wtW-y2-eHI"/>
+                                    </constraints>
+                                </customView>
+                                <box verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" borderWidth="0.0" boxType="custom" borderType="none" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="aKF-jF-j28">
+                                    <rect key="frame" x="0.0" y="70" width="540" height="10"/>
+                                    <view key="contentView" id="JZo-4E-daL">
+                                        <rect key="frame" x="0.0" y="0.0" width="540" height="10"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </view>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="10" placeholder="YES" id="mBQ-Ak-ief"/>
+                                    </constraints>
+                                    <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                    <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </box>
+                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="Qpj-Jg-O2P">
+                                    <rect key="frame" x="0.0" y="38" width="540" height="32"/>
+                                    <subviews>
+                                        <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" verticalScrollElasticity="none" translatesAutoresizingMaskIntoConstraints="NO" id="Wqa-oS-Ker" customClass="VerticalForwardingScrollView" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="20" y="-16" width="500" height="64"/>
+                                            <clipView key="contentView" horizontalCompressionResistancePriority="1000" drawsBackground="NO" copiesOnScroll="NO" id="F2Q-xC-zBZ">
+                                                <rect key="frame" x="0.0" y="0.0" width="500" height="64"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <stackView distribution="fill" orientation="horizontal" alignment="centerY" horizontalStackHuggingPriority="1000" verticalStackHuggingPriority="249.99998474121094" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Mh-D1-Cst">
+                                                        <rect key="frame" x="0.0" y="0.0" width="136" height="64"/>
+                                                        <subviews>
+                                                            <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="ONU-Ae-smU">
+                                                                <rect key="frame" x="0.0" y="16" width="96" height="32"/>
+                                                                <buttonCell key="cell" type="bevel" title="Source: source" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="eHQ-Lm-dV0">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </button>
+                                                            <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="3rp-np-hoh">
+                                                                <rect key="frame" x="104" y="16" width="32" height="32"/>
+                                                                <buttonCell key="cell" type="bevel" title="#tag" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="cjr-ZW-7Gp">
+                                                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                </buttonCell>
+                                                            </button>
+                                                        </subviews>
+                                                        <visibilityPriorities>
+                                                            <integer value="1000"/>
+                                                            <integer value="1000"/>
+                                                        </visibilityPriorities>
+                                                        <customSpacing>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                            <real value="3.4028234663852886e+38"/>
+                                                        </customSpacing>
+                                                    </stackView>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="1Mh-D1-Cst" firstAttribute="leading" secondItem="F2Q-xC-zBZ" secondAttribute="leading" id="32K-xA-SFa"/>
+                                                    <constraint firstAttribute="bottom" secondItem="1Mh-D1-Cst" secondAttribute="bottom" id="LrQ-dk-heI"/>
+                                                    <constraint firstItem="1Mh-D1-Cst" firstAttribute="top" secondItem="F2Q-xC-zBZ" secondAttribute="top" id="rjd-iu-pAs"/>
+                                                </constraints>
+                                            </clipView>
+                                            <scroller key="horizontalScroller" verticalHuggingPriority="750" horizontal="YES" id="HDj-B2-bI2">
+                                                <rect key="frame" x="0.0" y="48" width="500" height="16"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </scroller>
+                                            <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="98A-EE-V50">
+                                                <rect key="frame" x="-100" y="-100" width="16" height="32"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                            </scroller>
+                                        </scrollView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="Wqa-oS-Ker" secondAttribute="bottom" constant="-16" id="8aG-C6-B2E"/>
+                                        <constraint firstItem="Wqa-oS-Ker" firstAttribute="leading" secondItem="Qpj-Jg-O2P" secondAttribute="leading" constant="20" id="NNY-RH-7De"/>
+                                        <constraint firstAttribute="height" constant="32" id="YIP-9b-qJ1"/>
+                                        <constraint firstItem="Wqa-oS-Ker" firstAttribute="top" secondItem="Qpj-Jg-O2P" secondAttribute="top" constant="-16" id="cgJ-aa-LNu"/>
+                                        <constraint firstAttribute="trailing" secondItem="Wqa-oS-Ker" secondAttribute="trailing" constant="20" id="eW6-Wh-mF2"/>
+                                    </constraints>
+                                </customView>
+                                <customView translatesAutoresizingMaskIntoConstraints="NO" id="WGL-Rt-gb0">
+                                    <rect key="frame" x="0.0" y="8" width="540" height="30"/>
+                                    <subviews>
+                                        <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="pES-91-YOo" customClass="TextTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                            <rect key="frame" x="20" y="-1" width="81" height="32"/>
+                                            <buttonCell key="cell" type="bevel" title="1,000 notes" bezelStyle="rounded" alignment="center" imageScaling="proportionallyDown" inset="2" id="TTu-Qz-zOw">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="systemBold"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="showNotes:" target="nC1-5x-mE8" id="eoI-9C-cHN"/>
+                                            </connections>
+                                        </button>
+                                        <stackView distribution="fill" orientation="horizontal" alignment="centerY" spacing="16" horizontalStackHuggingPriority="249.99998474121094" verticalStackHuggingPriority="249.99998474121094" detachesHiddenViews="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Jr-m2-bXb">
+                                            <rect key="frame" x="239" y="0.0" width="281" height="30"/>
+                                            <subviews>
+                                                <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="lHZ-wT-wz0" userLabel="Share" customClass="ImageTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="38" height="30"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="share" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="gLL-iD-wzj">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="share:" target="nC1-5x-mE8" id="em2-ub-dNs"/>
+                                                    </connections>
+                                                </button>
+                                                <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="YM0-fg-GeC" userLabel="Share" customClass="ImageTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                                    <rect key="frame" x="54" y="0.0" width="48" height="30"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="edit" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="4dh-uZ-Jfd">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <connections>
+                                                        <action selector="edit:" target="nC1-5x-mE8" id="aZu-Tc-kzv"/>
+                                                    </connections>
+                                                </button>
+                                                <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="awq-Q7-6cj" userLabel="Share" customClass="ImageTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                                    <rect key="frame" x="118" y="0.0" width="40" height="30"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="delete" imagePosition="overlaps" alignment="center" imageScaling="proportionallyDown" inset="2" id="C8P-Ww-xPt">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="activeTint">
+                                                            <color key="value" red="0.81176470590000005" green="0.28235294119999998" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="deletePost:" target="nC1-5x-mE8" id="pf8-Ds-iQP"/>
+                                                    </connections>
+                                                </button>
+                                                <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="Jfw-G1-hye" userLabel="Reblog" customClass="ImageTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                                    <rect key="frame" x="174" y="0.0" width="50" height="30"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="reblog" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="pgW-3f-keN">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="activeTint">
+                                                            <color key="value" red="0.28627450980392155" green="0.69803921568627447" blue="0.47058823529411764" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="reblog:" target="nC1-5x-mE8" id="PZr-4C-kLO"/>
+                                                    </connections>
+                                                </button>
+                                                <button horizontalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="rs2-5Y-V9e" userLabel="Like" customClass="ImageTintButton" customModule="Dashfjord" customModuleProvider="target">
+                                                    <rect key="frame" x="240" y="0.0" width="41" height="30"/>
+                                                    <buttonCell key="cell" type="bevel" bezelStyle="rounded" image="like" imagePosition="only" alignment="center" imageScaling="proportionallyDown" inset="2" id="oPI-Ar-jI0">
+                                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="activeTint">
+                                                            <color key="value" red="0.81176470588235294" green="0.28235294117647058" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <action selector="like:" target="nC1-5x-mE8" id="nSb-Ii-SKI"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <visibilityPriorities>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                                <integer value="1000"/>
+                                            </visibilityPriorities>
+                                            <customSpacing>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                                <real value="3.4028234663852886e+38"/>
+                                            </customSpacing>
+                                        </stackView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="2Jr-m2-bXb" secondAttribute="bottom" id="3Fw-em-0iA"/>
+                                        <constraint firstAttribute="trailing" secondItem="2Jr-m2-bXb" secondAttribute="trailing" constant="20" id="Rqe-aG-PB9"/>
+                                        <constraint firstItem="pES-91-YOo" firstAttribute="centerY" secondItem="WGL-Rt-gb0" secondAttribute="centerY" id="Y5T-oX-PjB"/>
+                                        <constraint firstItem="pES-91-YOo" firstAttribute="leading" secondItem="WGL-Rt-gb0" secondAttribute="leading" constant="20" id="cYL-g5-RFw"/>
+                                        <constraint firstItem="2Jr-m2-bXb" firstAttribute="top" secondItem="WGL-Rt-gb0" secondAttribute="top" id="mkT-uj-6Of"/>
+                                        <constraint firstAttribute="height" constant="30" id="sOE-WM-f8F"/>
+                                    </constraints>
+                                </customView>
+                            </subviews>
+                            <edgeInsets key="edgeInsets" left="0.0" right="0.0" top="0.0" bottom="8"/>
+                            <constraints>
+                                <constraint firstAttribute="trailing" secondItem="c22-O7-iKe" secondAttribute="trailing" id="3Vi-Sj-lv6"/>
+                                <constraint firstAttribute="trailing" secondItem="WGL-Rt-gb0" secondAttribute="trailing" id="DA5-Rq-139"/>
+                                <constraint firstAttribute="width" constant="540" id="TdG-8P-CTb"/>
+                                <constraint firstItem="Qpj-Jg-O2P" firstAttribute="leading" secondItem="JIk-b9-o1z" secondAttribute="leading" id="U0R-Ww-BNl"/>
+                                <constraint firstItem="aKF-jF-j28" firstAttribute="leading" secondItem="JIk-b9-o1z" secondAttribute="leading" id="U92-6x-hQU"/>
+                                <constraint firstItem="WGL-Rt-gb0" firstAttribute="leading" secondItem="JIk-b9-o1z" secondAttribute="leading" id="VLf-oT-lCD"/>
+                                <constraint firstItem="c22-O7-iKe" firstAttribute="leading" secondItem="JIk-b9-o1z" secondAttribute="leading" id="beM-Ua-ppS"/>
+                                <constraint firstAttribute="trailing" secondItem="aKF-jF-j28" secondAttribute="trailing" id="rsq-vd-ccN"/>
+                                <constraint firstAttribute="trailing" secondItem="Qpj-Jg-O2P" secondAttribute="trailing" id="vUb-rw-8kp"/>
+                            </constraints>
+                            <visibilityPriorities>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                                <integer value="1000"/>
+                            </visibilityPriorities>
+                            <customSpacing>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                                <real value="3.4028234663852886e+38"/>
+                            </customSpacing>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="JIk-b9-o1z" firstAttribute="leading" secondItem="OGo-Tl-K1f" secondAttribute="leading" id="JVE-Nk-wtb"/>
+                        <constraint firstItem="JIk-b9-o1z" firstAttribute="width" secondItem="OGo-Tl-K1f" secondAttribute="width" constant="-20" id="LlZ-Nx-xI7"/>
+                        <constraint firstAttribute="bottom" secondItem="JIk-b9-o1z" secondAttribute="bottom" id="XX2-jW-M0U"/>
+                        <constraint firstItem="JIk-b9-o1z" firstAttribute="top" secondItem="OGo-Tl-K1f" secondAttribute="top" id="db1-3O-JoR"/>
+                        <constraint firstItem="jPL-7l-5e2" firstAttribute="leading" secondItem="OGo-Tl-K1f" secondAttribute="leading" constant="8" id="rE1-ae-Mzs"/>
+                    </constraints>
+                </customView>
+                <button translatesAutoresizingMaskIntoConstraints="NO" id="9Pk-S0-dn6" customClass="RoundRectImageButton" customModule="Dashfjord" customModuleProvider="target">
+                    <rect key="frame" x="20" y="61" width="64" height="64"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="9Pk-S0-dn6" secondAttribute="height" multiplier="1:1" id="7Sb-Qt-lwI"/>
+                    </constraints>
+                    <buttonCell key="cell" type="square" bezelStyle="shadowlessSquare" image="blank" imagePosition="overlaps" alignment="center" imageScaling="axesIndependently" inset="2" id="xTR-qE-Hxf">
+                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <integer key="value" value="3"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="openBlog:" target="nC1-5x-mE8" id="rSe-GX-RQT"/>
+                    </connections>
+                </button>
+                <customView hidden="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vKZ-lf-inY" customClass="SelectionCaretView" customModule="Dashfjord" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="77" width="20" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="Tg8-an-Nzi"/>
+                        <constraint firstAttribute="width" constant="20" id="VcQ-34-ZL1"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="color">
+                            <color key="value" red="0.21176470589999999" green="0.27450980390000002" blue="0.36470588240000001" alpha="1" colorSpace="calibratedRGB"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </customView>
+            </subviews>
+            <constraints>
+                <constraint firstItem="vKZ-lf-inY" firstAttribute="centerY" secondItem="9Pk-S0-dn6" secondAttribute="centerY" id="1rS-ty-Osr"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="9Pk-S0-dn6" secondAttribute="bottom" id="80o-ga-KWq"/>
+                <constraint firstAttribute="trailing" secondItem="OGo-Tl-K1f" secondAttribute="trailing" id="9g1-U5-6Tg"/>
+                <constraint firstItem="OGo-Tl-K1f" firstAttribute="leading" secondItem="9Pk-S0-dn6" secondAttribute="trailing" constant="20" id="Cg0-xq-Lgc"/>
+                <constraint firstItem="OGo-Tl-K1f" firstAttribute="top" secondItem="nC1-5x-mE8" secondAttribute="top" id="EMk-rv-AAJ"/>
+                <constraint firstItem="jPL-7l-5e2" firstAttribute="bottom" secondItem="9Pk-S0-dn6" secondAttribute="bottom" id="L5e-tA-jKZ"/>
+                <constraint firstItem="9Pk-S0-dn6" firstAttribute="top" secondItem="nC1-5x-mE8" secondAttribute="top" priority="250" id="L8P-HQ-Hq6"/>
+                <constraint firstItem="jPL-7l-5e2" firstAttribute="top" secondItem="9Pk-S0-dn6" secondAttribute="top" constant="8" id="Lcx-oS-Eys"/>
+                <constraint firstAttribute="bottom" secondItem="OGo-Tl-K1f" secondAttribute="bottom" id="OIm-pX-2ra"/>
+                <constraint firstItem="vKZ-lf-inY" firstAttribute="leading" secondItem="nC1-5x-mE8" secondAttribute="leading" id="kXJ-dY-7SC"/>
+                <constraint firstItem="9Pk-S0-dn6" firstAttribute="leading" secondItem="vKZ-lf-inY" secondAttribute="trailing" id="rJa-vZ-7kQ"/>
+            </constraints>
+            <connections>
+                <outlet property="avatarButton" destination="9Pk-S0-dn6" id="7ur-P6-C9G"/>
+                <outlet property="avatarConstraint" destination="L8P-HQ-Hq6" id="s87-FI-ubf"/>
+                <outlet property="blogNameButton" destination="Uvl-Vr-VnR" id="T4O-f7-HBM"/>
+                <outlet property="box" destination="aKF-jF-j28" id="ncm-HN-Ipy"/>
+                <outlet property="deleteButton" destination="awq-Q7-6cj" id="OiM-KV-1rJ"/>
+                <outlet property="editButton" destination="YM0-fg-GeC" id="nIN-s9-V3Y"/>
+                <outlet property="infoSlidingConstraint" destination="JVE-Nk-wtb" id="WH1-uJ-2Cb"/>
+                <outlet property="infoTextField" destination="jPL-7l-5e2" id="grN-mI-YwM"/>
+                <outlet property="likeButton" destination="rs2-5Y-V9e" id="cgK-9s-Ypn"/>
+                <outlet property="notesButton" destination="pES-91-YOo" id="kbY-h2-udo"/>
+                <outlet property="reblogButton" destination="Jfw-G1-hye" id="ZKd-FG-Gsw"/>
+                <outlet property="reblogIcon" destination="AaP-sx-U6d" id="97n-lO-Gci"/>
+                <outlet property="reblogNameButton" destination="B07-q4-tlR" id="CDa-UZ-9sl"/>
+                <outlet property="selectionCaret" destination="vKZ-lf-inY" id="b0j-Bc-M7p"/>
+                <outlet property="shareButton" destination="lHZ-wT-wz0" id="3HH-YW-tB2"/>
+                <outlet property="stackView" destination="JIk-b9-o1z" id="8bg-88-eEz"/>
+                <outlet property="tagsScrollView" destination="Wqa-oS-Ker" id="sIH-To-IxH"/>
+                <outlet property="tagsStackView" destination="1Mh-D1-Cst" id="Uc2-zA-Msp"/>
+                <outlet property="tagsView" destination="Qpj-Jg-O2P" id="3V3-zR-YIO"/>
+            </connections>
+            <point key="canvasLocation" x="-743" y="-63.5"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="blank" width="1" height="1"/>
+        <image name="delete" width="40" height="60"/>
+        <image name="edit" width="48" height="60"/>
+        <image name="like" width="41" height="60"/>
+        <image name="reblog" width="50" height="60"/>
+        <image name="share" width="38" height="60"/>
+    </resources>
+</document>
