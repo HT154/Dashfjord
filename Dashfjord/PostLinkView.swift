@@ -13,7 +13,7 @@ class PostLinkViewController: PostContentViewController {
     let stackView = TrailStackView()
     
     var photoView: TrimScaleImageButton!
-    let publisherLabelPhoto = Utils.createLabel(font: Font.get(weight: .Bold, size: 13), textColor: NSColor.whiteColor())
+    let publisherLabelPhoto = Utils.createLabel(font: Font.get(weight: .Bold, size: 13), textColor: NSColor.white)
     
     let infoView = ColorView()
     let infoStackView = WidthStretchingStackView()
@@ -24,9 +24,9 @@ class PostLinkViewController: PostContentViewController {
         let button = NSButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.action = #selector(PostLinkViewController.openURL(_:))
-        button.bordered = false
-        button.imagePosition = .ImageOnly
-        (button.cell as? NSButtonCell)?.setButtonType(.MomentaryChangeButton)
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        (button.cell as? NSButtonCell)?.setButtonType(.momentaryChange)
         
         return button
     }()
@@ -35,22 +35,22 @@ class PostLinkViewController: PostContentViewController {
     required init() {
         super.init()
         
-        infoStackView.edgeInsets = NSEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        infoStackView.edgeInsets = EdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
         infoButton.target = self
         
         infoView.color = NSColor(white: (242.0/255), alpha: 1)
-        infoView.setNeedsDisplayInRect(infoView.bounds)
+        infoView.setNeedsDisplay(infoView.bounds)
         infoView.addSubview(infoStackView)
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[sv]-0-|", options: [], metrics: nil, views: ["sv": infoStackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[sv]-0-|", options: [], metrics: nil, views: ["sv": infoStackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[sv]-0-|", options: [], metrics: nil, views: ["sv": infoStackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[sv]-0-|", options: [], metrics: nil, views: ["sv": infoStackView]))
         infoView.addSubview(infoButton)
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[ib]-0-|", options: [], metrics: nil, views: ["ib": infoButton]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[ib]-0-|", options: [], metrics: nil, views: ["ib": infoButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[ib]-0-|", options: [], metrics: nil, views: ["ib": infoButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[ib]-0-|", options: [], metrics: nil, views: ["ib": infoButton]))
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -64,32 +64,32 @@ class PostLinkViewController: PostContentViewController {
             let gradient = LinearGradientView()
             gradient.translatesAutoresizingMaskIntoConstraints = false
             photoView.addSubview(gradient)
-            NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[gradient]-0-|", options: [], metrics: nil, views: ["gradient": gradient]))
-            NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[gradient(\(photo.height / 2))]", options: [], metrics: nil, views: ["gradient": gradient]))
+            NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[gradient]-0-|", options: [], metrics: nil, views: ["gradient": gradient]))
+            NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[gradient(\(photo.height / 2))]", options: [], metrics: nil, views: ["gradient": gradient]))
             
             photoView.addSubview(publisherLabelPhoto)
-            NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-20-[label]", options: [], metrics: nil, views: ["label": publisherLabelPhoto]))
-            NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-20-[label]", options: [], metrics: nil, views: ["label": publisherLabelPhoto]))
+            NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-20-[label]", options: [], metrics: nil, views: ["label": publisherLabelPhoto]))
+            NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[label]", options: [], metrics: nil, views: ["label": publisherLabelPhoto]))
             
             if let publisher = post.publisher {
                 publisherLabelPhoto.stringValue = publisher
-                publisherLabelPhoto.hidden = false
+                publisherLabelPhoto.isHidden = false
             } else {
-                publisherLabelPhoto.hidden = true
+                publisherLabelPhoto.isHidden = true
             }
             
-            stackView.addView(photoView, inGravity: .Center, inset: 0)
+            stackView.addView(photoView, inGravity: .center, inset: 0)
         } else {
             if let publisher = post.publisher {
                 publisherLabelInfo.stringValue = publisher
-                infoStackView.addView(publisherLabelInfo, inGravity: .Center, inset: 20)
+                infoStackView.addView(publisherLabelInfo, inGravity: .center, inset: 20)
             }
         }
         
         let titleLabel = Utils.createResizingLabel()
-        titleLabel.selectable = false
+        titleLabel.isSelectable = false
         titleLabel.font = Font.get(.Title, weight: .Bold, size: 24)
-        infoStackView.addView(titleLabel, inGravity: .Center, inset: 20)
+        infoStackView.addView(titleLabel, inGravity: .center, inset: 20)
         
         if let title = post.title {
             titleLabel.stringValue = "\(title) ›"
@@ -102,21 +102,21 @@ class PostLinkViewController: PostContentViewController {
             excerptLabel.font = Font.get(size: 14)
             excerptLabel.stringValue = excerpt
             
-            infoStackView.addView(excerptLabel, inGravity: .Center, inset: 20)
+            infoStackView.addView(excerptLabel, inGravity: .center, inset: 20)
         }
         
         if let author = post.linkAuthor {
             authorLabel.stringValue = "By \(author)"
-            infoStackView.addView(authorLabel, inGravity: .Center, inset: 20)
+            infoStackView.addView(authorLabel, inGravity: .center, inset: 20)
         }
         
-        stackView.addView(infoView, inGravity: .Center, inset: 0)
+        stackView.addView(infoView, inGravity: .center, inset: 0)
         
         stackView.addTrail(post.trail, includeFirstHorizontalLine: false)
     }
     
-    @IBAction func openURL(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: post.URL!)!)
+    @IBAction func openURL(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: post.URL!)!)
     }
     
 }

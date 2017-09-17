@@ -18,8 +18,8 @@ class PostQuoteViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -39,12 +39,12 @@ class PostQuoteViewController: PostContentViewController {
         
         quoteLabel.stringValue = "“\(post.text?.withoutHTMLEntities() ?? "")”"
         
-        stackView.addView(quoteLabel, inGravity: .Center, inset: 20)
+        stackView.addView(quoteLabel, inGravity: .center, inset: 20)
         
         if post.source!.characters.count > 0 {
             let sourceView = TrailContentView()
             sourceView.parseString(post.source!)
-            stackView.addView(sourceView, inGravity: .Center, inset: 0)
+            stackView.addView(sourceView, inGravity: .center, inset: 0)
         }
     }
     

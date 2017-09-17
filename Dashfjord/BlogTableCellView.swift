@@ -43,30 +43,30 @@ class BlogTableCellView: NSTableCellView {
     
     let primaryColorInactive = NSColor(calibratedWhite: 52.0/255, alpha: 1)
     let secondaryColorInactive = NSColor(calibratedWhite: 108.0/255, alpha: 1)
-    let primaryColorActive = NSColor.whiteColor()
+    let primaryColorActive = NSColor.white
     let secondaryColorActive = NSColor(calibratedWhite: 227.0/255, alpha: 1)
     
     override var backgroundStyle: NSBackgroundStyle {
         set {
             super.backgroundStyle = newValue
             
-            if newValue == .Dark {
+            if newValue == .dark {
                 blogNameField.textColor = primaryColorActive
                 for button in [primaryPostsButton, primaryFollowersButton, primaryMessagesButton, primaryDraftsButton, primaryQueueButton] {
-                    button.color = primaryColorActive
+                    button?.color = primaryColorActive
                 }
                 
                 for field in [blogTitleField, secondaryPostsField, secondaryFollowersField, secondaryMessagesField, secondaryDraftsField, secondaryQueueField] {
-                    field.textColor = secondaryColorActive
+                    field?.textColor = secondaryColorActive
                 }
             } else {
                 blogNameField.textColor = primaryColorInactive
                 for button in [primaryPostsButton, primaryFollowersButton, primaryMessagesButton, primaryDraftsButton, primaryQueueButton] {
-                    button.color = primaryColorInactive
+                    button?.color = primaryColorInactive
                 }
                 
                 for field in [blogTitleField, secondaryPostsField, secondaryFollowersField, secondaryMessagesField, secondaryDraftsField, secondaryQueueField] {
-                    field.textColor = secondaryColorInactive
+                    field?.textColor = secondaryColorInactive
                 }
             }
         }
@@ -75,24 +75,24 @@ class BlogTableCellView: NSTableCellView {
         }
     }
     
-    @IBAction func postsButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/blog/\(blog.name)")!)
+    @IBAction func postsButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/blog/\(blog.name)")!)
     }
     
-    @IBAction func followersButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/blog/\(blog.name)/followers")!)
+    @IBAction func followersButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/blog/\(blog.name)/followers")!)
     }
     
-    @IBAction func messagesButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/blog/\(blog.name)/messages")!)
+    @IBAction func messagesButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/blog/\(blog.name)/messages")!)
     }
     
-    @IBAction func draftsButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/blog/\(blog.name)/drafts")!)
+    @IBAction func draftsButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/blog/\(blog.name)/drafts")!)
     }
     
-    @IBAction func queueButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/blog/\(blog.name)/queue")!)
+    @IBAction func queueButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/blog/\(blog.name)/queue")!)
     }
     
 }

@@ -12,16 +12,16 @@ class DashboardViewController: PostTableViewController {
     
     override func performRefresh() {
         switch Utils.debug {
-        case .Off:
+        case .off:
             invalidateDashboardCheckTimer()
             API.dashboard(["reblog_info": "true", "filter": "clean"], callback: refreshCallback)
-        case .Blog:
+        case .blog:
             API.posts(blog: "hacktail", parameters: ["reblog_info": "true", "filter": "clean"]) { posts, blog, error in
-                self.refreshCallback(posts: posts, error: error)
+                self.refreshCallback(posts, error)
             }
-        case .Post:
+        case .post:
             API.posts(blog: "", parameters: ["id": 0, "reblog_info": "true", "filter": "clean"]) { posts, blog, error in
-                self.refreshCallback(posts: posts, error: error)
+                self.refreshCallback(posts, error)
                 self.canLoadMore = false
                 self.tableView.reloadData()
             }
@@ -32,20 +32,20 @@ class DashboardViewController: PostTableViewController {
         super.finishRefresh()
         setBadges(nil)
         
-        if Utils.debug == .Off {
+        if Utils.debug == .off {
             self.createDashboardCheckTimer()
         }
     }
     
     override func performLoadMore() {
         switch Utils.debug {
-        case .Off:
+        case .off:
             API.dashboard(["offset": posts.count + filteredPosts, "reblog_info": "true", "filter": "clean"], callback: loadMoreCallback)
-        case .Blog:
+        case .blog:
             API.posts(blog: "hacktail", parameters: ["offset": posts.count + filteredPosts, "reblog_info": "true", "filter": "clean"]) { posts, blog, error in
-                self.loadMoreCallback(posts: posts, error: error)
+                self.loadMoreCallback(posts, error)
             }
-        case .Post:
+        case .post:
             break
         }
     }
@@ -53,12 +53,12 @@ class DashboardViewController: PostTableViewController {
     // MARK: - Dashboard post checking
     
     let dashboardCheckPostLimit = 10
-    let dashboardCheckInterval: NSTimeInterval = 3 * 60
-    var dashboardCheckTimer: NSTimer?
+    let dashboardCheckInterval: TimeInterval = 3 * 60
+    var dashboardCheckTimer: Timer?
     
     func createDashboardCheckTimer() {
         if dashboardCheckTimer == nil {
-            dashboardCheckTimer = NSTimer.scheduledTimerWithTimeInterval(dashboardCheckInterval, target: self, selector: #selector(DashboardViewController.fireDashboardCheckTimer(_:)), userInfo: nil, repeats: true)
+            dashboardCheckTimer = Timer.scheduledTimer(timeInterval: dashboardCheckInterval, target: self, selector: #selector(DashboardViewController.fireDashboardCheckTimer(_:)), userInfo: nil, repeats: true)
         }
     }
     
@@ -69,9 +69,9 @@ class DashboardViewController: PostTableViewController {
         }
     }
     
-    func fireDashboardCheckTimer(timer: NSTimer?) {
-        if Utils.debug == .Off && posts.count > 0 {
-            API.dashboard(["since_id": posts[0].id, "filter": "clean"]) { (posts: [Post]?, error: NSError?) in
+    func fireDashboardCheckTimer(_ timer: Timer?) {
+        if Utils.debug == .off && posts.count > 0 {
+            API.dashboard(["since_id": posts[0].id, "filter": "clean"]) { (posts: [Post]?, error: Error?) in
                 if var p = posts {
                     p = p.filter { !PostFilterManager.sharedInstance.shouldFilter($0) }
                     
@@ -90,7 +90,7 @@ class DashboardViewController: PostTableViewController {
         }
     }
     
-    func setBadges(string: String?) {
+    func setBadges(_ string: String?) {
         (view.window?.windowController as? DashboardWindowController)?.setPostsBadge(string)
         NSApp.dockTile.badgeLabel = string
     }

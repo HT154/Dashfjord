@@ -41,7 +41,7 @@ class Post: NSObject, ModelType {
     
     var blogName: String
     var canReply: Bool = true
-    var date: NSDate
+    var date: Date
     var followed: Bool
     var format: PostFormat
     var id: Int
@@ -132,7 +132,7 @@ class Post: NSObject, ModelType {
     required init(dict: JSONDict) {
         blogName = dict["blog_name"]! as! String
         canReply = dict["can_reply"]! as! Bool
-        date = Post.dateFormatter.dateFromString(dict["date"]! as! String)!
+        date = Post.dateFormatter.date(from: dict["date"]! as! String)!
         followed = dict["followed"]! as! Bool
         format = PostFormat(rawValue: dict["format"]! as! String)!
         id = dict["id"]! as! Int
@@ -192,7 +192,7 @@ class Post: NSObject, ModelType {
             
             content = Post.buildContent(tags, parts: [caption])
         case .Quote:
-            text = (dict["text"] as? String)?.stringByReplacingOccurrencesOfString("<[^>]*>", withString: "", options: [.RegularExpressionSearch], range: nil)
+            text = (dict["text"] as? String)?.replacingOccurrences(of: "<[^>]*>", with: "", options: [.regularExpression], range: nil)
             source = dict["source"] as? String
             
             content = Post.buildContent(tags, parts: [text, source])
@@ -243,7 +243,7 @@ class Post: NSObject, ModelType {
         case .Answer:
             askingName = dict["asking_name"] as? String
             askingURL = dict["asking_url"] as? String
-            question = (dict["question"] as? String)?.stringByReplacingOccurrencesOfString("<[^>]*>", withString: "", options: [.RegularExpressionSearch], range: nil)
+            question = (dict["question"] as? String)?.replacingOccurrences(of: "<[^>]*>", with: "", options: [.regularExpression], range: nil)
             answer = dict["answer"] as? String
             
             content = Post.buildContent(tags, parts: [askingName, question, answer])
@@ -255,13 +255,13 @@ class Post: NSObject, ModelType {
         return "\(type.rawValue): \(blogName)\(reblog)"
     }
     
-    static let dateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
         formatter.dateFormat = "YYYY/MM/dd HH:mm:ss zzz"
         return formatter
     }()
     
-    private class func buildContent(tags: [String], parts: [String?]) -> String {
+    private class func buildContent(_ tags: [String], parts: [String?]) -> String {
         var c = ""
         
         for part in parts {
@@ -270,9 +270,9 @@ class Post: NSObject, ModelType {
             }
         }
         
-        c = c.stringByReplacingOccurrencesOfString("<[^>]*>", withString: "", options: [.RegularExpressionSearch], range: nil)
-        c = c.stringByAppendingString(tags.joinWithSeparator(" "))
-        c = c.lowercaseString
+        c = c.replacingOccurrences(of: "<[^>]*>", with: "", options: [.regularExpression], range: nil)
+        c = c + tags.joined(separator: " ")
+        c = c.lowercased()
         
         return c
     }

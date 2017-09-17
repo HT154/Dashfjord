@@ -11,19 +11,19 @@ import Cocoa
 @IBDesignable class LinearGradientView: NSView {
 
     @IBInspectable var startingColor: NSColor = NSColor(white: 0, alpha: 0.4) {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
-    @IBInspectable var endingColor: NSColor = NSColor.clearColor() {
-        didSet { setNeedsDisplayInRect(bounds) }
+    @IBInspectable var endingColor: NSColor = NSColor.clear {
+        didSet { setNeedsDisplay(bounds) }
     }
     
     @IBInspectable var angle: CGFloat = 270 {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        NSGradient(startingColor: startingColor, endingColor: endingColor)?.drawInRect(bounds, angle: angle)
+    override func draw(_ dirtyRect: NSRect) {
+        NSGradient(starting: startingColor, ending: endingColor)?.draw(in: bounds, angle: angle)
     }
     
 }

@@ -29,21 +29,21 @@ class Trail: NSObject, ModelType {
             preContent = ""
         }
         
-        while let preStart = preContent.rangeOfString("<pre>") {
-            guard let preEnd = preContent.rangeOfString("</pre>") else { break }
+        while let preStart = preContent.range(of: "<pre>") {
+            guard let preEnd = preContent.range(of: "</pre>") else { break }
             
-            content += preContent.substringToIndex(preStart.startIndex).stringByReplacingOccurrencesOfString("\n", withString: " ")
-            content += preContent.substringWithRange(preStart.startIndex..<preEnd.endIndex)
+            content += preContent.substring(to: preStart.lowerBound).replacingOccurrences(of: "\n", with: " ")
+            content += preContent.substring(with: preStart.lowerBound..<preEnd.upperBound)
             
-            preContent = preContent.substringFromIndex(preEnd.endIndex)
+            preContent = preContent.substring(from: preEnd.upperBound)
         }
         
-        content += preContent.stringByReplacingOccurrencesOfString("\n", withString: " ")
+        content += preContent.replacingOccurrences(of: "\n", with: " ")
         
-        if dict["post"]!["id"]! is Int {
-            postID = dict["post"]!["id"]! as! Int
+        if (dict["post"] as! JSONDict)["id"]! is Int {
+            postID = (dict["post"] as! JSONDict)["id"]! as! Int
         } else {
-            postID = Int(dict["post"]!["id"]! as! String)!
+            postID = Int((dict["post"] as! JSONDict)["id"]! as! String)!
         }
         
         if let isRoot = dict["is_root_item"] as! Bool? {

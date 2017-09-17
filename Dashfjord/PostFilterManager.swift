@@ -12,16 +12,16 @@ class PostFilterManager {
     
     static let sharedInstance = PostFilterManager()
     
-    var keywords: [String] = (NSUserDefaults.standardUserDefaults().arrayForKey("filterKeywords") as? [String])?.sort() ?? [] {
-        didSet { NSUserDefaults.standardUserDefaults().setObject(keywords, forKey: "filterKeywords") }
+    var keywords: [String] = (UserDefaults.standard.array(forKey: "filterKeywords") as? [String])?.sorted() ?? [] {
+        didSet { UserDefaults.standard.set(keywords, forKey: "filterKeywords") }
     }
     
-    func shouldFilter(post: Post) -> Bool {
-        let nkeywords = keywords.map { $0.lowercaseString }
-        let ntags = post.tags.map { $0.lowercaseString }
+    func shouldFilter(_ post: Post) -> Bool {
+        let nkeywords = keywords.map { $0.lowercased() }
+        let ntags = post.tags.map { $0.lowercased() }
         
         for keyword in nkeywords {
-            if ntags.contains(keyword) || post.content.containsString(keyword) {
+            if ntags.contains(keyword) || post.content.contains(keyword) {
                 return true
             }
         }

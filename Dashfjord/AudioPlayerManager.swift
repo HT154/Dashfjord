@@ -25,7 +25,7 @@ class AudioPlayerManager: NSObject {
                 return
             }
             
-            guard let url = NSURL(string: urlString) else {
+            guard let url = URL(string: urlString) else {
                 currentPost = nil
                 return
             }
@@ -54,7 +54,7 @@ class AudioPlayerManager: NSObject {
         }
     }
     
-    func install(post: Post, player: AudioPlayerView) {
+    func install(_ post: Post, player: AudioPlayerView) {
         if currentPost != post {
             currentPost = post
         }
@@ -64,7 +64,7 @@ class AudioPlayerManager: NSObject {
         }
     }
     
-    func installPlayer(player: AudioPlayerView) {
+    func installPlayer(_ player: AudioPlayerView) {
         if currentPlayer != player {
             currentPlayer = player
         }
@@ -87,43 +87,43 @@ class AudioPlayerManager: NSObject {
     private func tearDownStreamer() {
         guard let a = audioStreamer else { return }
         
-        if a.playing {
+        if a.isPlaying {
             a.stop()
         }
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: ASStatusChangedNotification, object: a)
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.ASStatusChanged, object: a)
         audioStreamer = nil
         
     }
     
-    private func buildStreamer(URL: NSURL) {
+    private func buildStreamer(_ URL: Foundation.URL) {
         if audioStreamer != nil {
             return
         }
         
-        audioStreamer = AudioStreamer(URL: URL)
+        audioStreamer = AudioStreamer(url: URL)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AudioPlayerManager.playbackStateChanged(_:)), name: ASStatusChangedNotification, object: audioStreamer)
+        NotificationCenter.default.addObserver(self, selector: #selector(AudioPlayerManager.playbackStateChanged(_:)), name: NSNotification.Name.ASStatusChanged, object: audioStreamer)
     }
     
-    func playbackStateChanged(n: NSNotification!) {
+    func playbackStateChanged(_ n: Notification!) {
         guard let a = audioStreamer else { return }
         
-        if a.waiting {
+        if a.isWaiting {
             currentPlayer?.playing = false
-        } else if a.playing {
+        } else if a.isPlaying {
             currentPlayer?.playing = true
-        } else if a.paused {
+        } else if a.isPaused {
             currentPlayer?.playing = false
         }
     }
     
-    let durationCheckInterval: NSTimeInterval = 0.1
-    var durationCheckTimer: NSTimer?
+    let durationCheckInterval: TimeInterval = 0.1
+    var durationCheckTimer: Timer?
     
     func createDurationCheckTimer() {
         if durationCheckTimer == nil {
-            durationCheckTimer = NSTimer.scheduledTimerWithTimeInterval(durationCheckInterval, target: self, selector: #selector(AudioPlayerManager.fireDurationCheckTimer(_:)), userInfo: nil, repeats: true)
+            durationCheckTimer = Timer.scheduledTimer(timeInterval: durationCheckInterval, target: self, selector: #selector(AudioPlayerManager.fireDurationCheckTimer(_:)), userInfo: nil, repeats: true)
         }
     }
     
@@ -134,7 +134,7 @@ class AudioPlayerManager: NSObject {
         }
     }
     
-    func fireDurationCheckTimer(timer: NSTimer?) {
+    func fireDurationCheckTimer(_ timer: Timer?) {
         guard let a = audioStreamer else { return }
         
         currentPlayer?.duration = a.duration

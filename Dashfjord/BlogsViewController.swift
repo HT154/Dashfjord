@@ -18,13 +18,13 @@ class BlogsViewController: NSViewController, NSTableViewDelegate, NSTableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NSNotificationCenter.defaultCenter().addObserverForName(BlogManager.CurrentBlogChanged, object: nil, queue: nil) { (notification: NSNotification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: BlogManager.CurrentBlogChanged), object: nil, queue: nil) { (notification: Notification) in
             if self.causedBlogChange {
                 self.causedBlogChange = false
             } else {
                 self.causedSelectionChange = true
-                let index = BlogManager.sharedInstance.blogs.indexOf(BlogManager.sharedInstance.currentBlog!)!
-                self.tableView.selectRowIndexes(NSIndexSet(index: index), byExtendingSelection: false)
+                let index = BlogManager.sharedInstance.blogs.index(of: BlogManager.sharedInstance.currentBlog!)!
+                self.tableView.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
                 self.tableView.scrollRowToVisible(index)
             }
         }
@@ -35,16 +35,16 @@ class BlogsViewController: NSViewController, NSTableViewDelegate, NSTableViewDat
         tableView.reloadData()
         
         if let current = BlogManager.sharedInstance.currentBlog {
-            let index = BlogManager.sharedInstance.blogs.indexOf(current)!
+            let index = BlogManager.sharedInstance.blogs.index(of: current)!
             if tableView.selectedRow != index {
                 causedSelectionChange = true
-                tableView.selectRowIndexes(NSIndexSet(index: index), byExtendingSelection: false)
+                tableView.selectRowIndexes(IndexSet(integer: index), byExtendingSelection: false)
                 tableView.scrollRowToVisible(index)
             }
         }
     }
     
-    func tableViewSelectionDidChange(notification: NSNotification) {
+    func tableViewSelectionDidChange(_ notification: Notification) {
         if causedSelectionChange {
             causedSelectionChange = false
         } else {
@@ -54,12 +54,12 @@ class BlogsViewController: NSViewController, NSTableViewDelegate, NSTableViewDat
         }
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return BlogManager.sharedInstance.blogs.count
     }
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let view = tableView.makeViewWithIdentifier("blogTableCellView", owner: nil) as! BlogTableCellView
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let view = tableView.make(withIdentifier: "blogTableCellView", owner: nil) as! BlogTableCellView
         view.blog = BlogManager.sharedInstance.blogs[row]
         return view
     }

@@ -15,7 +15,7 @@ class AudioPlayerView: NSView {
     
     var duration: Double = 1
     var progress: Double = 0 {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
     var post: Post! {
@@ -35,11 +35,11 @@ class AudioPlayerView: NSView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.action = #selector(AudioPlayerView.playPauseButton(_:))
         button.image = NSImage(named: "play")
-        button.bordered = false
-        button.imagePosition = .ImageOnly
-        (button.cell as? NSButtonCell)?.imageScaling = .ScaleProportionallyUpOrDown
-        (button.cell as? NSButtonCell)?.setButtonType(NSButtonType.MomentaryChangeButton)
-        NSLayoutConstraint(item: button, attribute: .Width, relatedBy: .Equal, toItem: button, attribute: .Height, multiplier: 1, constant: 0).active = true
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        (button.cell as? NSButtonCell)?.imageScaling = .scaleProportionallyUpOrDown
+        (button.cell as? NSButtonCell)?.setButtonType(.momentaryChange)
+        NSLayoutConstraint(item: button, attribute: .width, relatedBy: .equal, toItem: button, attribute: .height, multiplier: 1, constant: 0).isActive = true
         
         return button
     }()
@@ -55,7 +55,7 @@ class AudioPlayerView: NSView {
         let view = NSImageView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.image = NSImage(named: "note")
-        NSLayoutConstraint(item: view, attribute: .Width, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1, constant: 0).active = true
+        NSLayoutConstraint(item: view, attribute: .width, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 1, constant: 0).isActive = true
         
         return view
     }()
@@ -77,10 +77,10 @@ class AudioPlayerView: NSView {
         let imageInset = 8
         let buttonInset = imageInset + (imageSize - buttonSize) / 2
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-\(buttonInset)-[playPauseButton(\(buttonSize))]-\(buttonInset)-[infoField]-\(imageInset)-[albumArtImageView(\(imageSize))]-\(imageInset)-|", options: [], metrics: nil, views: ["playPauseButton": playPauseButton, "infoField": infoField, "albumArtImageView": albumArtImageView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-\(buttonInset)-[playPauseButton]-\(buttonInset)-|", options: [], metrics: nil, views: ["playPauseButton": playPauseButton]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-\(imageInset)-[albumArtImageView]-\(imageInset)-|", options: [], metrics: nil, views: ["albumArtImageView": albumArtImageView]))
-        NSLayoutConstraint(item: infoField, attribute: .CenterY, relatedBy: .Equal, toItem: self, attribute: .CenterY, multiplier: 1, constant: 0).active = true
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-\(buttonInset)-[playPauseButton(\(buttonSize))]-\(buttonInset)-[infoField]-\(imageInset)-[albumArtImageView(\(imageSize))]-\(imageInset)-|", options: [], metrics: nil, views: ["playPauseButton": playPauseButton, "infoField": infoField, "albumArtImageView": albumArtImageView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-\(buttonInset)-[playPauseButton]-\(buttonInset)-|", options: [], metrics: nil, views: ["playPauseButton": playPauseButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-\(imageInset)-[albumArtImageView]-\(imageInset)-|", options: [], metrics: nil, views: ["albumArtImageView": albumArtImageView]))
+        NSLayoutConstraint(item: infoField, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1, constant: 0).isActive = true
     }
     
     func configureView() {
@@ -98,7 +98,7 @@ class AudioPlayerView: NSView {
         
         let attInfo = NSMutableAttributedString(string: infoString, attributes: [NSForegroundColorAttributeName: NSColor(white: 1, alpha: 1)])
         attInfo.addAttribute(NSFontAttributeName, value: Font.get(weight: .Bold, size: 14), range: NSMakeRange(0, post.trackName!.characters.count))
-        attInfo.addAttribute(NSForegroundColorAttributeName, value: NSColor.whiteColor(), range: NSMakeRange(0, post.trackName!.characters.count))
+        attInfo.addAttribute(NSForegroundColorAttributeName, value: NSColor.white, range: NSMakeRange(0, post.trackName!.characters.count))
         
         infoField.attributedStringValue = attInfo
         
@@ -117,8 +117,8 @@ class AudioPlayerView: NSView {
         }
     }
     
-    @IBAction func playPauseButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: post.postURL)!)
+    @IBAction func playPauseButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: post.postURL)!)
 //        if playing {
 //            AudioPlayerManager.sharedInstance.pause()
 //        } else {
@@ -127,7 +127,7 @@ class AudioPlayerView: NSView {
 //        }
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         backgroundColor.set()
         NSBezierPath(rect: bounds).fill()
         

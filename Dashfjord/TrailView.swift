@@ -27,16 +27,16 @@ class TrailView: NSView {
         
         addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     func configureView() {
         stackView.removeAllViews()
         
-        stackView.addView(headerView, inGravity: .Center, inset: 20)
+        stackView.addView(headerView, inGravity: .center, inset: 20)
         
-        headerView.hidden = trail.currentItem && trail.rootItem
+        headerView.isHidden = trail.currentItem && trail.rootItem
         headerView.trail = trail
         
         stackView.parseString(trail.content)

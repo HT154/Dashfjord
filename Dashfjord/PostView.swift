@@ -17,7 +17,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
     
     var selected = false {
         didSet {
-            selectionCaret.animator().hidden = !selected
+            selectionCaret.animator().isHidden = !selected
             
             if !selected {
                 notesPopover.close()
@@ -60,14 +60,14 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
     }
     
     override func awakeFromNib() {
-        heightHoldingConstraint = NSLayoutConstraint(item: box, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 0)
+        heightHoldingConstraint = NSLayoutConstraint(item: box, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 0)
         heightHoldingConstraint.priority = NSLayoutPriorityDefaultLow
         box.translatesAutoresizingMaskIntoConstraints = false
-        heightHoldingConstraint.active = true
+        heightHoldingConstraint.isActive = true
         box.contentView = nil
-        shareButton.sendActionOn(Int(NSEventMask.LeftMouseDownMask.rawValue))
+        shareButton.sendAction(on: NSEventMask(rawValue: UInt64(Int(NSEventMask.leftMouseDown.rawValue))))
         
-        NSNotificationCenter.defaultCenter().addObserverForName(BlogManager.BlogsLoaded, object: nil, queue: nil) { notification in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: BlogManager.BlogsLoaded), object: nil, queue: nil) { notification in
             self.updatePostControls()
         }
     }
@@ -78,19 +78,19 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         blogNameButton.title = post.blogName
         
         if let rebloggedName = post.rebloggedFromName {
-            reblogIcon.hidden = false
-            reblogNameButton.hidden = false
+            reblogIcon.isHidden = false
+            reblogNameButton.isHidden = false
             reblogNameButton.title = rebloggedName
         } else {
-            reblogIcon.hidden = true
-            reblogNameButton.hidden = true
+            reblogIcon.isHidden = true
+            reblogNameButton.isHidden = true
         }
         
         for view in tagsStackView!.views {
             tagsStackView.removeView(view)
         }
         
-        tagsScrollView.horizontalScroller?.hidden = true
+        tagsScrollView.horizontalScroller?.isHidden = true
         
         var footer1Hidden = true
         
@@ -100,20 +100,20 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
             sourceButton.target = self
             sourceButton.action = #selector(PostView.clickSourceButton(_:))
             sourceButton.title = "Source: \(source)"
-            tagsStackView.addView(sourceButton, inGravity: .Center)
+            tagsStackView.addView(sourceButton, in: .center)
         }
         
-        for (i, tag) in post.tags.enumerate() {
+        for (i, tag) in post.tags.enumerated() {
             footer1Hidden = false
             let tagButton = Utils.createTextButton()
             tagButton.target = self
             tagButton.action = #selector(PostView.clickTagButton(_:))
             tagButton.title = "#\(tag)"
             tagButton.tag = i
-            tagsStackView.addView(tagButton, inGravity: .Center)
+            tagsStackView.addView(tagButton, in: .center)
         }
         
-        tagsView.hidden = footer1Hidden
+        tagsView.isHidden = footer1Hidden
         
         updateNoteCount()
         
@@ -128,7 +128,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         
         var infoString = ""
         infoString += "Post ID: \(post.id)\n"
-        infoString += "Published: \(PostView.infoDateFormatter.stringFromDate(post.date))\n"
+        infoString += "Published: \(PostView.infoDateFormatter.string(from: post.date as Date))\n"
         
         infoTextField.stringValue = infoString
     }
@@ -139,9 +139,9 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         if post.noteCount == 0 {
             notesButton.title = ""
         } else if post.noteCount == 1 {
-            notesButton.title = "\(PostView.notesFormatter.stringFromNumber(post.noteCount)!) note"
+            notesButton.title = "\(PostView.notesFormatter.string(for: post.noteCount)!) note"
         } else {
-            notesButton.title = "\(PostView.notesFormatter.stringFromNumber(post.noteCount)!) notes"
+            notesButton.title = "\(PostView.notesFormatter.string(for: post.noteCount)!) notes"
         }
     }
     
@@ -150,64 +150,64 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         
         let isMyBlog = BlogManager.sharedInstance.isMyBlog(name)
         
-        editButton.hidden = !isMyBlog
-        deleteButton.hidden = !isMyBlog
-        likeButton.hidden = isMyBlog
+        editButton.isHidden = !isMyBlog
+        deleteButton.isHidden = !isMyBlog
+        likeButton.isHidden = isMyBlog
     }
     
     func updateHeight() {
-        if let idx = controller.posts.indexOf(post) {
+        if let idx = controller.posts.index(of: post) {
             controller.updateHeight(idx)
         }
     }
     
     // MARK: - Post Actions
     
-    @IBAction func openBlog(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://\(post.blogName).tumblr.com")!)
+    @IBAction func openBlog(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "http://\(post.blogName).tumblr.com")!)
     }
     
-    @IBAction func clickReblogNameButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: post.rebloggedFromURL!)!)
+    @IBAction func clickReblogNameButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: post.rebloggedFromURL!)!)
     }
     
-    @IBAction func clickPermalinkButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: post.postURL)!)
+    @IBAction func clickPermalinkButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: post.postURL)!)
     }
     
-    @IBAction func showOnDash(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://tumblr.com/dashboard/2/\(post.id + 1)")!)
+    @IBAction func showOnDash(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://tumblr.com/dashboard/2/\(post.id + 1)")!)
     }
     
-    @IBAction func clickSourceButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: post.sourceURL!)!)
+    @IBAction func clickSourceButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: post.sourceURL!)!)
     }
     
-    @IBAction func clickTagButton(sender: NSButton) {
+    @IBAction func clickTagButton(_ sender: NSButton) {
         var tag = post.tags[sender.tag]
         
-        let charset = NSMutableCharacterSet(charactersInString: "/")
+        let charset = NSMutableCharacterSet(charactersIn: "/")
         charset.invert()
-        charset.formIntersectionWithCharacterSet(NSCharacterSet.URLPathAllowedCharacterSet())
+        charset.formIntersection(with: CharacterSet.urlPathAllowed)
         
-        tag = tag.stringByAddingPercentEncodingWithAllowedCharacters(charset)!
-        tag = tag.stringByReplacingOccurrencesOfString("%20", withString: "-")
+        tag = tag.addingPercentEncoding(withAllowedCharacters: charset as CharacterSet)!
+        tag = tag.replacingOccurrences(of: "%20", with: "-")
         
         let url: String
         
-        if NSApp.currentEvent!.modifierFlags.contains(.CommandKeyMask) {
+        if NSApp.currentEvent!.modifierFlags.contains(.command) {
             url = "http://\(post.blogName).tumblr.com/tagged/\(tag)"
         } else {
             url = "http://www.tumblr.com/tagged/\(tag)"
         }
         
-        if let u = NSURL(string: url) {
-            NSWorkspace.sharedWorkspace().openURL(u)
+        if let u = URL(string: url) {
+            NSWorkspace.shared().open(u)
         }
     }
     
     lazy var notesController: NotesViewController = {
-        let controller = self.window!.contentViewController!.storyboard!.instantiateControllerWithIdentifier("notesViewController") as! NotesViewController
+        let controller = self.window!.contentViewController!.storyboard!.instantiateController(withIdentifier: "notesViewController") as! NotesViewController
         controller.blog = self.post.blogName
         controller.id = self.post.id
         
@@ -216,28 +216,28 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
     
     let notesPopover: NSPopover = {
         let popover = NSPopover()
-        popover.behavior = NSPopoverBehavior.Transient
+        popover.behavior = NSPopoverBehavior.transient
         
         return popover
     }()
     
-    @IBAction func showNotes(sender: AnyObject!) {
+    @IBAction func showNotes(_ sender: AnyObject!) {
         if post.noteCount == 0 { return }
         
         notesController.refresh()
         notesPopover.contentViewController = notesController
-        notesPopover.showRelativeToRect(notesButton.bounds, ofView: notesButton, preferredEdge: .MaxX)
+        notesPopover.show(relativeTo: notesButton.bounds, of: notesButton, preferredEdge: .maxX)
     }
     
-    @IBAction func share(sender: AnyObject!) {
-        NSSharingServicePicker(items: [NSURL(string: post.postURL)!]).showRelativeToRect(shareButton.bounds, ofView: shareButton, preferredEdge: .MinY)
+    @IBAction func share(_ sender: AnyObject!) {
+        NSSharingServicePicker(items: [URL(string: post.postURL)!]).show(relativeTo: shareButton.bounds, of: shareButton, preferredEdge: .minY)
     }
     
-    @IBAction func reblog(sender: AnyObject!) {
+    @IBAction func reblog(_ sender: AnyObject!) {
         if sender is NSButton {
             let event = NSApp.currentEvent!
-            if event.modifierFlags.contains(.AlternateKeyMask) {
-                if event.modifierFlags.contains(.CommandKeyMask) {
+            if event.modifierFlags.contains(.option) {
+                if event.modifierFlags.contains(.command) {
                     reblogQueueQuick(sender)
                 } else {
                     reblogQuick(sender)
@@ -247,14 +247,14 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
             }
         }
         
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/reblog/\(post.id)/\(post.reblogKey)")!)
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/reblog/\(post.id)/\(post.reblogKey)")!)
         reblogButton.tintActive = true
         self.reblogButton.image = NSImage(named: "reblog")
         post.noteCount += 1; updateNoteCount()
     }
     
     var likeInProgress = false
-    @IBAction func like(sender: AnyObject!) {
+    @IBAction func like(_ sender: AnyObject!) {
         if BlogManager.sharedInstance.isMyBlog(post.blogName) { return }
         if likeInProgress { return }
         
@@ -262,7 +262,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         if likeButton.tintActive {
             likeButton.tintActive = false
             post.noteCount -= 1; updateNoteCount()
-            API.unlike(post.id, reblogKey: post.reblogKey) { (error: NSError?) in
+            API.unlike(post.id, reblogKey: post.reblogKey) { (error: Error?) in
                 if error != nil {
                     self.likeButton.tintActive = true
                     self.post.noteCount += 1; self.updateNoteCount()
@@ -273,7 +273,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         } else {
             likeButton.tintActive = true
             post.noteCount += 1; updateNoteCount()
-            API.like(post.id, reblogKey: post.reblogKey) { (error: NSError?) in
+            API.like(post.id, reblogKey: post.reblogKey) { (error: Error?) in
                 if error != nil {
                     self.likeButton.tintActive = false
                     self.post.noteCount -= 1; self.updateNoteCount()
@@ -284,13 +284,13 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         }
     }
     
-    @IBAction func edit(sender: AnyObject!) {
+    @IBAction func edit(_ sender: AnyObject!) {
         if !BlogManager.sharedInstance.isMyBlog(post.blogName) { return }
         
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/edit/\(post.id)")!)
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/edit/\(post.id)")!)
     }
     
-    @IBAction func deletePost(sender: AnyObject!) {
+    @IBAction func deletePost(_ sender: AnyObject!) {
         if !BlogManager.sharedInstance.isMyBlog(post.blogName) { return }
         
         if deleteButton.tintActive {
@@ -306,7 +306,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         }
     }
     
-    @IBAction func reblogQuick(sender: AnyObject!) {
+    @IBAction func reblogQuick(_ sender: AnyObject!) {
         guard let blogName = BlogManager.sharedInstance.currentBlogName else { return }
         
         reblogButton.tintActive = true
@@ -321,7 +321,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         }
     }
     
-    @IBAction func reblogQueueQuick(sender: AnyObject!) {
+    @IBAction func reblogQueueQuick(_ sender: AnyObject!) {
         guard let blogName = BlogManager.sharedInstance.currentBlogName else { return }
         
         reblogButton.tintActive = true
@@ -338,11 +338,11 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         }
     }
     
-    @IBAction func getInfo(sender: AnyObject!) {
+    @IBAction func getInfo(_ sender: AnyObject!) {
         showInfo(infoSlidingConstraint.constant == 0)
     }
     
-    func showInfo(flag: Bool) {
+    func showInfo(_ flag: Bool) {
         infoSlidingConstraint.animator().constant = flag ? 300 : 0
     }
     
@@ -361,7 +361,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
     func willDisappear() {
         if contentViewController != nil && visibleRect == NSZeroRect {
             heightHoldingConstraint.constant = contentViewController.view.bounds.size.height
-            heightHoldingConstraint.active = true
+            heightHoldingConstraint.isActive = true
             
             contentViewController.destroyView()
             PostContentViewReuseManager.sharedInstance.viewControllerRetiredForType(post.type, view: contentViewController)
@@ -385,7 +385,7 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         
         guard let w = window else { return }
         
-        let visDiff2 = w.frame.size.height - (convertPoint(frame.origin, toView: w.contentView).y + frame.size.height)
+        let visDiff2 = w.frame.size.height - (convert(frame.origin, to: w.contentView).y + frame.size.height)
         
         if visDiff2 >= topConstant {
             avatarConstraint.constant = 0
@@ -398,27 +398,27 @@ class PostView: NSTableCellView, NSTextViewDelegate, NSSharingServicePickerDeleg
         
     }
     
-    func scrollTags(forward: Bool) {
+    func scrollTags(_ forward: Bool) {
         var r = tagsStackView.visibleRect
         r.origin.x += forward ? 100 : -100
-        tagsStackView.scrollRectToVisible(r)
+        tagsStackView.scrollToVisible(r)
     }
     
     // MARK: - Formatters
     
-    static let notesFormatter: NSNumberFormatter = {
-        let formatter = NSNumberFormatter()
-        formatter.formatterBehavior = .Behavior10_4
-        formatter.numberStyle = .DecimalStyle
+    static let notesFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.formatterBehavior = .behavior10_4
+        formatter.numberStyle = .decimal
         formatter.thousandSeparator = ","
         return formatter
     }()
     
-    static let infoDateFormatter: NSDateFormatter = {
-        let formatter = NSDateFormatter()
-        formatter.formatterBehavior = .Behavior10_4
-        formatter.dateStyle = .LongStyle
-        formatter.timeStyle = .LongStyle
+    static let infoDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.formatterBehavior = .behavior10_4
+        formatter.dateStyle = .long
+        formatter.timeStyle = .long
         return formatter
     }()
     

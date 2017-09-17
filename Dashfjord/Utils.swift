@@ -11,12 +11,12 @@ import Cocoa
 class Utils: NSObject {
     
     enum DebugMode {
-        case Off
-        case Blog
-        case Post
+        case off
+        case blog
+        case post
     }
     
-    static let debug = DebugMode.Off
+    static let debug = DebugMode.off
     
     static let tumblrBlue = NSColor(red: (54.0/255), green: (70.0/255), blue: (93.0/255), alpha: 1)
     static let bodyTextColor = NSColor(white: (68.0/255), alpha: 1)
@@ -26,10 +26,10 @@ class Utils: NSObject {
     class func createTextButton() -> TextTintButton {
         let button = TextTintButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setContentHuggingPriority(NSLayoutPriorityRequired, forOrientation: .Horizontal)
-        button.alignment = .Center
-        button.bordered = false
-        button.imagePosition = .NoImage
+        button.setContentHuggingPriority(NSLayoutPriorityRequired, for: .horizontal)
+        button.alignment = .center
+        button.isBordered = false
+        button.imagePosition = .noImage
         
         return button
     }
@@ -37,22 +37,22 @@ class Utils: NSObject {
     class func createImageButton() -> RoundRectImageButton {
         let button = RoundRectImageButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.bordered = false
-        button.imagePosition = .ImageOnly
-        (button.cell! as! NSButtonCell).imageScaling = .ScaleAxesIndependently
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        (button.cell! as! NSButtonCell).imageScaling = .scaleAxesIndependently
         
         return button
     }
     
-    class func createLabel(font font: NSFont? = nil, textColor: NSColor? = nil) -> NSTextField {
+    class func createLabel(font: NSFont? = nil, textColor: NSColor? = nil) -> NSTextField {
         let label = NSTextField()
         label.translatesAutoresizingMaskIntoConstraints = false
         
-        label.editable = false
-        label.selectable = false
+        label.isEditable = false
+        label.isSelectable = false
         label.allowsEditingTextAttributes = true
         
-        label.bordered = false
+        label.isBordered = false
         label.drawsBackground = false
         
         if let f = font {
@@ -66,26 +66,26 @@ class Utils: NSObject {
         return label
     }
     
-    class func createResizingLabel(font font: NSFont? = nil, textColor: NSColor? = nil) -> NSTextField {
+    class func createResizingLabel(font: NSFont? = nil, textColor: NSColor? = nil) -> NSTextField {
         let label = Utils.createLabel(font: font, textColor: textColor)
         
-        label.setContentHuggingPriority(249, forOrientation: .Horizontal)
-        label.setContentCompressionResistancePriority(249, forOrientation: .Horizontal)
+        label.setContentHuggingPriority(249, for: .horizontal)
+        label.setContentCompressionResistancePriority(249, for: .horizontal)
         
-        label.selectable = true
-        label.lineBreakMode = .ByWordWrapping
+        label.isSelectable = true
+        label.lineBreakMode = .byWordWrapping
         
         return label
     }
     
-    class func createPostImageView(tag: Int, width: CGFloat, aspect: CGFloat, target: AnyObject?, action: Selector) -> TrimScaleImageButton {
+    class func createPostImageView(_ tag: Int, width: CGFloat, aspect: CGFloat, target: AnyObject?, action: Selector) -> TrimScaleImageButton {
         let imageView = TrimScaleImageButton()
         imageView.tag = tag
         imageView.target = target
         imageView.action = action
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: width).active = true
-        NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.Width, relatedBy: NSLayoutRelation.Equal, toItem: imageView, attribute: NSLayoutAttribute.Height, multiplier: aspect, constant: 0).active = true
+        NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: width).isActive = true
+        NSLayoutConstraint(item: imageView, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: imageView, attribute: NSLayoutAttribute.height, multiplier: aspect, constant: 0).isActive = true
         
         return imageView
     }
@@ -99,10 +99,10 @@ extension NSColor {
         var blue: CGFloat = 0.0
         var alpha: CGFloat = 1.0
         
-        let trimmed = string.stringByReplacingOccurrencesOfString("#", withString: "")
-        let scanner = NSScanner(string: trimmed)
+        let trimmed = string.replacingOccurrences(of: "#", with: "")
+        let scanner = Scanner(string: trimmed)
         var hexValue: CUnsignedLongLong = 0
-        if scanner.scanHexLongLong(&hexValue) {
+        if scanner.scanHexInt64(&hexValue) {
             switch (trimmed.characters.count) {
             case 3:
                 red = CGFloat((hexValue & 0xF00) >> 8) / 15.0
@@ -135,7 +135,7 @@ extension NSColor {
 extension String {
     
     func withoutHTMLEntities() -> String {
-        return try! NSAttributedString(data: dataUsingEncoding(NSUTF8StringEncoding)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: NSUTF8StringEncoding], documentAttributes: nil).string
+        return try! NSAttributedString(data: data(using: String.Encoding.utf8)!, options: [NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType, NSCharacterEncodingDocumentAttribute: String.Encoding.utf8.rawValue], documentAttributes: nil).string
     }
     
 }

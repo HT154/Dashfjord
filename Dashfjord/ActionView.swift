@@ -19,12 +19,12 @@ import Cocoa
         NoteType.Posted: (NSColor(calibratedRed: 93.0/255, green: 115.0/255, blue: 141.0/255, alpha: 1.0), NSImage(named: "action_posted")!),
     ]
     
-    var color = NSColor.blackColor() {
-        didSet { setNeedsDisplayInRect(bounds) }
+    var color = NSColor.black {
+        didSet { setNeedsDisplay(bounds) }
     }
     
     var image = NSImage(named: "action_posted")! {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
@@ -33,14 +33,14 @@ import Cocoa
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func setType(type: NoteType) {
+    func setType(_ type: NoteType) {
         (color, image) = ActionView.types[type]!
-        setNeedsDisplayInRect(bounds)
+        setNeedsDisplay(bounds)
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         color.set()
-        NSBezierPath(ovalInRect: bounds).fill()
+        NSBezierPath(ovalIn: bounds).fill()
         
         var imageFrame = NSZeroRect
         imageFrame.size = image.size
@@ -48,7 +48,7 @@ import Cocoa
         imageFrame.origin.x = NSMidX(bounds) - imageFrame.size.width / 2
         imageFrame.origin.y = NSMidY(bounds) - imageFrame.size.height / 2
         
-        image.drawInRect(NSIntegralRect(imageFrame))
+        image.draw(in: NSIntegralRect(imageFrame))
     }
     
 }

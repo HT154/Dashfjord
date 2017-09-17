@@ -18,19 +18,19 @@ class BlogManager {
     var blogs: [Blog] = []
     
     init() {
-        NSNotificationCenter.defaultCenter().addObserverForName(ReachabilityChangedNotification, object: nil, queue: nil) { (note: NSNotification) -> Void in
-            let reachability = note.object as! Reachability
-            
-            if reachability.isReachable() && self.blogs.count == 0 {
-                self.refresh()
-            }
-        }
+//        NotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: ReachabilityChangedNotification), object: nil, queue: nil) { (note: Notification) -> Void in
+//            let reachability = note.object as! Reachability
+//            
+//            if reachability.isReachable() && self.blogs.count == 0 {
+//                self.refresh()
+//            }
+//        }
     }
     
-    var currentBlogName: String? = NSUserDefaults.standardUserDefaults().stringForKey("currentBlogName") {
+    var currentBlogName: String? = UserDefaults.standard.string(forKey: "currentBlogName") {
         didSet {
-            NSUserDefaults.standardUserDefaults().setObject(currentBlogName, forKey: "currentBlogName")
-            NSNotificationCenter.defaultCenter().postNotificationName(BlogManager.CurrentBlogChanged, object: blogNamed(currentBlogName))
+            UserDefaults.standard.set(currentBlogName, forKey: "currentBlogName")
+            NotificationCenter.default.post(name: Notification.Name(rawValue: BlogManager.CurrentBlogChanged), object: blogNamed(currentBlogName))
         }
     }
     
@@ -43,17 +43,17 @@ class BlogManager {
             guard let blogs = blogs else { return }
             self.blogs = blogs
             
-            NSNotificationCenter.defaultCenter().postNotificationName(BlogManager.BlogsLoaded, object: self.blogs)
+            NotificationCenter.default.post(name: Notification.Name(rawValue: BlogManager.BlogsLoaded), object: self.blogs)
             
             if self.currentBlogName == nil {
                 self.currentBlogName = self.blogs[0].name
             } else {
-                NSNotificationCenter.defaultCenter().postNotificationName(BlogManager.CurrentBlogChanged, object: self.blogNamed(self.currentBlogName))
+                NotificationCenter.default.post(name: Notification.Name(rawValue: BlogManager.CurrentBlogChanged), object: self.blogNamed(self.currentBlogName))
             }
         }
     }
     
-    func blogNamed(blogName: String?) -> Blog? {
+    func blogNamed(_ blogName: String?) -> Blog? {
         guard let name = blogName else { return nil }
         
         for blog in blogs {
@@ -65,7 +65,7 @@ class BlogManager {
         return nil
     }
     
-    func isMyBlog(blogName: String) -> Bool {
+    func isMyBlog(_ blogName: String) -> Bool {
         return blogNamed(blogName) != nil
     }
     

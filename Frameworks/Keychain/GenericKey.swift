@@ -1,34 +1,29 @@
 //
-//  ArchiveKey.swift
+//  GenericKey.swift
 //  SwiftKeychain
 //
-//  Created by Yanko Dimitrov on 11/13/14.
+//  Created by Yanko Dimitrov on 11/12/14.
 //  Copyright (c) 2014 Yanko Dimitrov. All rights reserved.
 //
 
 import Foundation
 
-public class ArchiveKey: BaseKey {
+public class GenericKey: BaseKey {
     
-    public var object: NSCoding?
+    public var value: NSString?
     
-    private var secretData: NSData? {
+    private var secretData: Data? {
         
-        if let objectToArchive = object {
-            
-            return NSKeyedArchiver.archivedDataWithRootObject(objectToArchive)
-        }
-        
-        return nil
+        return value?.data(using: String.Encoding.utf8.rawValue)
     }
     
     ///////////////////////////////////////////////////////
     // MARK: - Initializers
     ///////////////////////////////////////////////////////
     
-    public init(keyName: String, object: NSCoding? = nil) {
+    public init(keyName: String, value: NSString? = nil) {
         
-        self.object = object
+        self.value = value
         super.init(name: keyName)
     }
     
@@ -36,7 +31,7 @@ public class ArchiveKey: BaseKey {
     // MARK: - KeychainItem
     ///////////////////////////////////////////////////////
     
-    public override func makeQueryForKeychain(keychain: KeychainService) -> KeychainQuery {
+    public override func makeQueryForKeychain(_ keychain: KeychainService) -> KeychainQuery {
         
         let query = KeychainQuery(keychain: keychain)
         
@@ -53,14 +48,14 @@ public class ArchiveKey: BaseKey {
         
         if let data = secretData {
             
-            fields[kSecValueData as String] = data
+            fields[kSecValueData as NSString] = data as AnyObject?
         }
         
         return fields
     }
     
-    public override func unlockData(data: NSData) {
+    public override func unlockData(_ data: Data) {
         
-        object = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? NSCoding
+        value = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
     }
 }

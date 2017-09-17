@@ -10,13 +10,13 @@ import Cocoa
 
 class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
     
-    let inlineElements = NSSet(array: ["a", "b", "strong", "i", "em", "big", "small", "code", "br", "img", "span", "sub", "sup", "strike"])
-    let blockElements = NSSet(array: ["h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "div", "figure", "hr", "p", "pre", "ol", "ul", "li"])
+    let inlineElements: Set<String> = ["a", "b", "strong", "i", "em", "big", "small", "code", "br", "img", "span", "sub", "sup", "strike"]
+    let blockElements: Set<String> = ["h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "div", "figure", "hr", "p", "pre", "ol", "ul", "li"]
     
     var parser: DTHTMLParser!
     
     var elStack: [String] = []
-    var attrStack: [[NSObject : AnyObject]?] = []
+    var attrStack: [[AnyHashable:Any]?] = []
     var stackStack: [WidthStretchingStackView] = []
     var liCountStack: [Int] = []
     
@@ -24,25 +24,25 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
     
     var buildingString = NSMutableAttributedString()
     
-    func parseString(string: String, encoding: NSStringEncoding = NSUTF16StringEncoding) {
-        parseData(string.dataUsingEncoding(encoding)!, encoding: encoding)
+    func parseString(_ string: String, encoding: String.Encoding = String.Encoding.utf16) {
+        parseData(string.data(using: encoding)!, encoding: encoding)
     }
     
-    func parseData(data: NSData, encoding: NSStringEncoding = NSUTF16StringEncoding) {
-        parser = DTHTMLParser(data: data, encoding: encoding)
+    func parseData(_ data: Data, encoding: String.Encoding = String.Encoding.utf16) {
+        parser = DTHTMLParser(data: data, encoding: encoding.rawValue)
         parser.delegate = self
         parser.parse()
     }
     
     // MARK: - DTHTMLParserDelegate Methods
     
-    func parser(parser: DTHTMLParser!, didStartElement elementName: String!, attributes attributeDict: [NSObject : AnyObject]!) {
+    func parser(_ parser: DTHTMLParser!, didStartElement elementName: String!, attributes attributeDict: [AnyHashable : Any]! = [:]) {
         if !isValidElement(elementName) { return }
         
         elStack.append(elementName)
         attrStack.append(attributeDict)
         
-        if blockElements.containsObject(elementName) {
+        if blockElements.contains(elementName) {
             buildingString = NSMutableAttributedString()
             
             switch elementName {
@@ -56,16 +56,16 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
             default: break
             }
         } else if elementName == "br" {
-            buildingString.appendAttributedString(NSAttributedString(string: "\n"))
-        } else if inlineElements.containsObject(elementName) && inlineElements.containsObject(lastEnded) {
-            buildingString.appendAttributedString(NSAttributedString(string: " "))
+            buildingString.append(NSAttributedString(string: "\n"))
+        } else if inlineElements.contains(elementName) && inlineElements.contains(lastEnded) {
+            buildingString.append(NSAttributedString(string: " "))
         }
     }
     
-    func parser(parser: DTHTMLParser!, didEndElement elementName: String!) {
+    func parser(_ parser: DTHTMLParser!, didEndElement elementName: String!) {
         if !isValidElement(elementName) { return }
         
-        if blockElements.containsObject(elementName) {
+        if blockElements.contains(elementName) {
             switch elementName {
             case "div", "figure": break
             case "blockquote":
@@ -80,25 +80,22 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
                 let bq = stackStack.popLast()!
                 view.addSubview(bq)
                 
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[cv]-0-|", options: [], metrics: nil, views: ["cv": cv]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[bq]-0-|", options: [], metrics: nil, views: ["bq": bq]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[cv(2)]-(-2)-[bq]-20-|", options: [], metrics: nil, views: ["cv": cv, "bq": bq]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[cv]-0-|", options: [], metrics: nil, views: ["cv": cv]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[bq]-0-|", options: [], metrics: nil, views: ["bq": bq]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[cv(2)]-(-2)-[bq]-20-|", options: [], metrics: nil, views: ["cv": cv, "bq": bq]))
                 
-                stackStack.last!.addView(view, inGravity: .Center, insetLeft: 20, insetRight: 0)
+                stackStack.last!.addView(view, inGravity: .center, insetLeft: 20, insetRight: 0)
             case "ol", "ul":
                 let view = stackStack.popLast()!
-                liCountStack.popLast()
+                _ = liCountStack.popLast()
                 
                 var leftInset: CGFloat = 20
                 
-                if (elStack as NSArray).indexesOfObjectsPassingTest({ (obj, idx, stop: UnsafeMutablePointer<ObjCBool>) -> Bool in
-                    let str = obj as! String
-                    return str == "ul" || str == "ol"
-                }).count > 1 {
+                if elStack.filter({ $0 == "ul" || $0 == "ol" }).count > 1 {
                     leftInset = 35
                 }
                 
-                stackStack.last!.addView(view, inGravity: .Center, insetLeft: leftInset, insetRight: 0)
+                stackStack.last!.addView(view, inGravity: .center, insetLeft: leftInset, insetRight: 0)
             case "li":
                 let view = NSView()
                 view.translatesAutoresizingMaskIntoConstraints = false
@@ -112,11 +109,11 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
                 view.addSubview(b)
                 view.addSubview(v)
                 
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[b]-0-|", options: [], metrics: nil, views: ["b": b]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[v]-0-|", options: [], metrics: nil, views: ["v": v]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[b(20)]-0-[v]-0-|", options: [], metrics: nil, views: ["v": v, "b": b]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[b]-0-|", options: [], metrics: nil, views: ["b": b]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[v]-0-|", options: [], metrics: nil, views: ["v": v]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[b(20)]-0-[v]-0-|", options: [], metrics: nil, views: ["v": v, "b": b]))
                 
-                stackStack.last!.addView(view, inGravity: .Center, inset: 20)
+                stackStack.last!.addView(view, inGravity: .center, inset: 20)
             case "pre":
                 let view = ColorView()
                 view.color = NSColor(white: (233.0/255), alpha: 1)
@@ -125,19 +122,19 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
                 v.attributedStringValue = trim(buildingString)
                 
                 view.addSubview(v)
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-10-[v]-10-|", options: [], metrics: nil, views: ["v": v]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-10-[v]-10-|", options: [], metrics: nil, views: ["v": v]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[v]-10-|", options: [], metrics: nil, views: ["v": v]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[v]-10-|", options: [], metrics: nil, views: ["v": v]))
                 
-                stackStack.last!.addView(view, inGravity: .Center, inset: 20)
+                stackStack.last!.addView(view, inGravity: .center, inset: 20)
             case "hr":
                 let view = HorizontalLineView()
-                addView(view, inGravity: .Center, inset: 200)
+                addView(view, inGravity: .center, inset: 200)
             default:
                 if buildingString.length == 0 { break }
                 
                 let view = Utils.createResizingLabel()
                 view.attributedStringValue = trim(buildingString)
-                stackStack.last!.addView(view, inGravity: .Center, inset: 20)
+                stackStack.last!.addView(view, inGravity: .center, inset: 20)
             }
         } else if elementName == "img" {
             let view: TrimScaleImageButton
@@ -145,14 +142,14 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
             if let src = attr("src", forElement: "img") as? String {
                 if attr("class", forElement: "figure") as? String == "tmblr-full" && !elStack.contains("blockquote") && !elStack.contains("ol") && !elStack.contains("ul") {
                     view = TrimScaleImageButton(autosizeAspect: true, autosizeWidth: false)
-                    stackStack.last!.addView(view, inGravity: .Center, inset: 0)
+                    stackStack.last!.addView(view, inGravity: .center, inset: 0)
                 } else {
                     view = TrimScaleImageButton(autosizeAspect: true, autosizeWidth: true)
-                    stackStack.last!.addView(view, inGravity: .Center, inset: 20, flexibleRight: true)
+                    stackStack.last!.addView(view, inGravity: .center, inset: 20, flexibleRight: true)
                 }
                 
                 if let href = attr("href", forElement: "a") {
-                    view.setLink(NSURL(string: href as! String))
+                    view.setLink(URL(string: href as! String))
                 }
                 
                 PhotoCache.sharedInstance.loadURL(src, into: view)
@@ -160,47 +157,47 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
         }
         
         lastEnded = elStack.popLast()!
-        attrStack.popLast()
+        _ = attrStack.popLast()
     }
     
-    func parser(parser: DTHTMLParser!, foundCharacters string: String!) {
+    func parser(_ parser: DTHTMLParser!, foundCharacters string: String!) {
         var chars = string
         
         if !elStack.contains("pre") {
-            chars = chars.stringByReplacingOccurrencesOfString("\t", withString: "")
-            chars = chars.stringByReplacingOccurrencesOfString("\n", withString: "")
-            chars = chars.stringByReplacingOccurrencesOfString("\r", withString: "")
+            chars = chars?.replacingOccurrences(of: "\t", with: "")
+            chars = chars?.replacingOccurrences(of: "\n", with: "")
+            chars = chars?.replacingOccurrences(of: "\r", with: "")
             do {
-                try chars = NSRegularExpression(pattern: " +", options: []).stringByReplacingMatchesInString(chars, options: [], range: NSMakeRange(0, chars.characters.count), withTemplate: " ")
+                try chars = NSRegularExpression(pattern: " +", options: []).stringByReplacingMatches(in: chars!, options: [], range: NSMakeRange(0, (chars?.characters.count)!), withTemplate: " ")
             } catch {}
         } else {
-            while chars.characters.last == "\n" {
-                chars = chars.substringToIndex(chars.endIndex.predecessor())
+            while chars?.characters.last == "\n" {
+                chars = chars?.substring(to: (chars?.index(before: (chars?.endIndex)!))!)
             }
         }
         
-        buildingString.appendAttributedString(NSAttributedString(string: chars, attributes: currentAttributes))
+        buildingString.append(NSAttributedString(string: chars!, attributes: currentAttributes))
         
         lastEnded = ""
     }
     
-    func parserDidStartDocument(parser: DTHTMLParser!) {
+    func parserDidStartDocument(_ parser: DTHTMLParser!) {
         stackStack.append(self)
         liCountStack.append(0)
     }
     
-    func parserDidEndDocument(parser: DTHTMLParser!) {
-        stackStack.last!.addView(VerticalSpacer(height: 2), inGravity: .Center, inset: 0)
+    func parserDidEndDocument(_ parser: DTHTMLParser!) {
+        stackStack.last!.addView(VerticalSpacer(height: 2), inGravity: .center, inset: 0)
     }
     
     // MARK: - Helper functions
     
-    private func isValidElement(el: String) -> Bool {
-        return inlineElements.containsObject(el) || blockElements.containsObject(el)
+    private func isValidElement(_ el: String) -> Bool {
+        return inlineElements.contains(el) || blockElements.contains(el)
     }
     
-    private func attr(attrName: NSObject, forElement element: String) -> AnyObject? {
-        var elIndex = elStack.endIndex.predecessor()
+    private func attr(_ attrName: String, forElement element: String) -> Any? {
+        var elIndex = (elStack.endIndex - 1)
         
         while elIndex >= 0 {
             if elStack[elIndex] == element {
@@ -209,7 +206,7 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
                 }
             }
             
-            elIndex = elIndex.predecessor()
+            elIndex = (elIndex - 1)
         }
         
         return nil
@@ -218,18 +215,15 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
     private var viewForCurrentList: NSView {
         let view: NSView
         
-        if elStack[elStack.count - 2] == "ul" {
+        if elStack.count > 2 && elStack[elStack.count - 2] == "ul" {
             let v = BulletView()
             
-            if (elStack as NSArray).indexesOfObjectsPassingTest({ (obj, idx, stop: UnsafeMutablePointer<ObjCBool>) -> Bool in
-                let str = obj as! String
-                return str == "ul" || str == "ol"
-            }).count > 1 {
+            if elStack.filter({ $0 == "ul" || $0 == "ol" }).count > 1 {
                 v.fill = false
             }
             
             view = v
-        } else if elStack[elStack.count - 2] == "ol" {
+        } else if elStack.count > 2 && elStack[elStack.count - 2] == "ol" {
             let v = Utils.createResizingLabel()
             v.stringValue = "\(liCountStack.last!)."
             v.font = Font.get(size: 14)
@@ -292,23 +286,27 @@ class TrailContentView: WidthStretchingStackView, DTHTMLParserDelegate {
             
             out[NSFontAttributeName] = Font.get(font, weight: weight, italic: italic, size: size)
             out[NSForegroundColorAttributeName] = Utils.bodyTextColor
-            out[NSSuperscriptAttributeName] = baseline
-            out[NSUnderlineStyleAttributeName] = underline ? NSUnderlineStyle.StyleSingle.rawValue : NSUnderlineStyle.StyleNone.rawValue
+            out[NSSuperscriptAttributeName] = baseline as AnyObject?
+            out[NSUnderlineStyleAttributeName] = (underline ? NSUnderlineStyle.styleSingle.rawValue : NSUnderlineStyle.styleNone.rawValue) as AnyObject?
             out[NSUnderlineColorAttributeName] = Utils.bodyTextColor
-            out[NSStrikethroughStyleAttributeName] = strike ? NSUnderlineStyle.StyleSingle.rawValue : NSUnderlineStyle.StyleNone.rawValue
+            out[NSStrikethroughStyleAttributeName] = (strike ? NSUnderlineStyle.styleSingle.rawValue : NSUnderlineStyle.styleNone.rawValue) as AnyObject?
             out[NSStrikethroughColorAttributeName] = Utils.bodyTextColor
             
             if let link = attr("href", forElement: "a") {
-                out[NSLinkAttributeName] = NSURL(string: link as! String)
+                out[NSLinkAttributeName] = URL(string: link as! String) as AnyObject?
             }
             
             return out
         }
     }
     
-    private func trim(str: NSMutableAttributedString) -> NSMutableAttributedString {
+    private func trim(_ str: NSMutableAttributedString) -> NSMutableAttributedString {
+        while str.string.characters.first == "\n" {
+            str.deleteCharacters(in: NSMakeRange(0, 1))
+        }
+
         while str.string.characters.last == "\n" {
-            str.deleteCharactersInRange(NSMakeRange(str.string.characters.count - 1, 1))
+            str.deleteCharacters(in: NSMakeRange(str.string.characters.count - 1, 1))
         }
         
         return str

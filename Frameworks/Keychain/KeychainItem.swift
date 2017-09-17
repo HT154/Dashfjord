@@ -17,7 +17,7 @@ public protocol KeychainItem {
         
         :param: keychain - KeychainService instance
     */
-    func makeQueryForKeychain(keychain: KeychainService) -> KeychainQuery
+    func makeQueryForKeychain(_ keychain: KeychainService) -> KeychainQuery
     
     /**
         Returns a dictionary wtih the Keychain fields and their values
@@ -32,7 +32,7 @@ public protocol KeychainItem {
         
         :param: data - the NSData stored in the Keychain
     */
-    func unlockData(data: NSData)
+    func unlockData(_ data: Data)
 }
 
 
@@ -53,7 +53,7 @@ public class BaseKey: KeychainItem {
         keyName = name
     }
     
-    public func makeQueryForKeychain(keychain: KeychainService) -> KeychainQuery {
+    public func makeQueryForKeychain(_ keychain: KeychainService) -> KeychainQuery {
         
         assertionFailure("should be overridden in subclass")
         
@@ -67,7 +67,7 @@ public class BaseKey: KeychainItem {
         return [NSObject: AnyObject]()
     }
     
-    public func unlockData(data: NSData) {
+    public func unlockData(_ data: Data) {
         
         assertionFailure("should be overridden in subclass")
     }

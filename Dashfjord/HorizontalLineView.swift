@@ -14,10 +14,10 @@ class HorizontalLineView: NSView {
     init() {
         super.init(frame: NSZeroRect)
         translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1.0, constant: 1.0).active = true
+        NSLayoutConstraint(item: self, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1.0, constant: 1.0).isActive = true
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         NSColor(calibratedWhite: (231.0 / 255), alpha: 1.0).set()
         NSBezierPath(rect: dirtyRect).fill()
     }

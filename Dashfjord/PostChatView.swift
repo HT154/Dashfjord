@@ -18,8 +18,8 @@ class PostChatViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -28,20 +28,20 @@ class PostChatViewController: PostContentViewController {
         if let title = post.title {
             if title != "" {
                 let titleLabel = Utils.createResizingLabel()
-                titleLabel.alignment = .Left
+                titleLabel.alignment = .left
                 titleLabel.font = Font.get(size: 32)
                 titleLabel.stringValue = title
                 
-                stackView.addView(titleLabel, inGravity: .Center, inset: 20)
+                stackView.addView(titleLabel, inGravity: .center, inset: 20)
             }
         }
         
         for chatLine in post.dialogue! {
             let chatLineView = Utils.createResizingLabel()
-            chatLineView.alignment = .Left
+            chatLineView.alignment = .left
             
-            let name = chatLine["name"]!.stringByReplacingOccurrencesOfString("<[^>]*>", withString: "", options: [.RegularExpressionSearch], range: nil)
-            let phrase = chatLine["phrase"]!.stringByReplacingOccurrencesOfString("<[^>]*>", withString: "", options: [.RegularExpressionSearch], range: nil)
+            let name = chatLine["name"]!.replacingOccurrences(of: "<[^>]*>", with: "", options: [.regularExpression], range: nil)
+            let phrase = chatLine["phrase"]!.replacingOccurrences(of: "<[^>]*>", with: "", options: [.regularExpression], range: nil)
             let line: String
             
             if name != "" {
@@ -58,7 +58,7 @@ class PostChatViewController: PostContentViewController {
             
             chatLineView.attributedStringValue = chatLineString
             
-            stackView.addView(chatLineView, inGravity: .Center, inset: 20)
+            stackView.addView(chatLineView, inGravity: .center, inset: 20)
         }
     }
     

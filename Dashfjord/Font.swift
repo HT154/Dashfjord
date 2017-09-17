@@ -24,14 +24,14 @@ class Font {
         case Monospace = "Courier"
     }
     
-    class func italicStyle(font: Font.Face) -> String {
+    class func italicStyle(_ font: Font.Face) -> String {
         switch font {
         case .Monospace: return "Oblique"
         default: return "Italic"
         }
     }
     
-    class func get(font: Font.Face = .Body, weight: Font.Weight = .Regular, italic: Bool = false, size: CGFloat) -> NSFont {
+    class func get(_ font: Font.Face = .Body, weight: Font.Weight = .Regular, italic: Bool = false, size: CGFloat) -> NSFont {
         var font = font
         if font == .Title {
             font = .Body
@@ -53,10 +53,10 @@ class Font {
     }
     
     class func printAll() {
-        for family in NSFontManager.sharedFontManager().availableFontFamilies {
+        for family in NSFontManager.shared().availableFontFamilies {
             print(family)
             
-            if let fonts = NSFontManager.sharedFontManager().availableMembersOfFontFamily(family) {
+            if let fonts = NSFontManager.shared().availableMembers(ofFontFamily: family) {
                 for font in fonts {
                     print("\t\(font)")
                 }

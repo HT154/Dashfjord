@@ -18,8 +18,8 @@ class PostPhotoViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -59,9 +59,9 @@ class PostPhotoViewController: PostContentViewController {
                 photoRowView.addSubview(photoView1)
                 photoRowView.addSubview(photoView2)
                 
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[photo1]-0-|", options: [], metrics: nil, views: ["photo1": photoView1]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[photo2]-0-|", options: [], metrics: nil, views: ["photo2": photoView2]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[photo1]-4-[photo2]-0-|", options: [], metrics: nil, views: ["photo1": photoView1, "photo2": photoView2]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[photo1]-0-|", options: [], metrics: nil, views: ["photo1": photoView1]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[photo2]-0-|", options: [], metrics: nil, views: ["photo2": photoView2]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[photo1]-4-[photo2]-0-|", options: [], metrics: nil, views: ["photo1": photoView1, "photo2": photoView2]))
             case 3:
                 let photo1 = post.photos![photoCounter]; photoCounter += 1
                 let photo2 = post.photos![photoCounter]; photoCounter += 1
@@ -85,42 +85,42 @@ class PostPhotoViewController: PostContentViewController {
                 photoRowView.addSubview(photoView2)
                 photoRowView.addSubview(photoView3)
                 
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[photo1]-0-|", options: [], metrics: nil, views: ["photo1": photoView1]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[photo2]-0-|", options: [], metrics: nil, views: ["photo2": photoView2]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[photo3]-0-|", options: [], metrics: nil, views: ["photo3": photoView3]))
-                NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[photo1]-4-[photo2]-4-[photo3]-0-|", options: [], metrics: nil, views: ["photo1": photoView1, "photo2": photoView2, "photo3": photoView3]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[photo1]-0-|", options: [], metrics: nil, views: ["photo1": photoView1]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[photo2]-0-|", options: [], metrics: nil, views: ["photo2": photoView2]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[photo3]-0-|", options: [], metrics: nil, views: ["photo3": photoView3]))
+                NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[photo1]-4-[photo2]-4-[photo3]-0-|", options: [], metrics: nil, views: ["photo1": photoView1, "photo2": photoView2, "photo3": photoView3]))
             default:
                 photoRowView = NSView()
             }
             
-            stackView.addView(photoRowView, inGravity: .Center)
+            stackView.addView(photoRowView, in: .center)
             
             if photoCounter != post.photos!.count {
-                stackView.addView(VerticalSpacer(height: 4), inGravity: .Center)
+                stackView.addView(VerticalSpacer(height: 4), in: .center)
             } else {
-                stackView.addView(VerticalSpacer(height: 5), inGravity: .Center)
+                stackView.addView(VerticalSpacer(height: 5), in: .center)
             }
         }
         
         if post!.trail.count > 0 {
             stackView.addTrail(post!.trail, includeFirstHorizontalLine: false)
         } else {
-            stackView.addView(VerticalSpacer(height: 4), inGravity: .Center)
+            stackView.addView(VerticalSpacer(height: 4), in: .center)
         }
     }
     
-    @IBAction func clickPhotoButton(sender: TrimScaleImageButton!) {
-        let wc = view.window!.contentViewController!.storyboard!.instantiateControllerWithIdentifier("enlargedPhotosWindow") as! NSWindowController
+    @IBAction func clickPhotoButton(_ sender: TrimScaleImageButton!) {
+        let wc = view.window!.contentViewController!.storyboard!.instantiateController(withIdentifier: "enlargedPhotosWindow") as! NSWindowController
         (wc.window! as! WAYWindow).titleBarView.appearance = NSAppearance(named: NSAppearanceNameVibrantDark)
         let vc = (wc.window!.contentViewController! as! EnlargedPhotosViewController).pageController
         
-        vc.transitionStyle = .HorizontalStrip
-        vc.delegate = vc
-        vc.objectsToShow = post.photos!
-        vc.indexToSelect = sender.tag
+        vc?.transitionStyle = .horizontalStrip
+        vc?.delegate = vc
+        vc?.objectsToShow = post.photos!
+        vc?.indexToSelect = sender.tag
         
-        let windowPoint = sender.superview!.convertPoint(sender.frame.origin, toView: nil)
-        let newRect = view.window!.convertRectToScreen(NSMakeRect(windowPoint.x, windowPoint.y, sender.bounds.size.width, sender.bounds.size.height))
+        let windowPoint = sender.superview!.convert(sender.frame.origin, to: nil)
+        let newRect = view.window!.convertToScreen(NSMakeRect(windowPoint.x, windowPoint.y, sender.bounds.size.width, sender.bounds.size.height))
         
         wc.window!.makeKeyAndOrderFront(nil)
         wc.window!.setFrame(newRect, display: false, animate: false)

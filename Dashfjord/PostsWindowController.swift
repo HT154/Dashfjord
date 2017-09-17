@@ -22,11 +22,11 @@ class PostsWindowController: NSWindowController, NSWindowDelegate {
     
     var windowActive: Bool = false {
         didSet {
-            NSNotificationCenter.defaultCenter().postNotificationName(PostsWindowController.ActiveChanged, object: self, userInfo: ["active": windowActive])
+            NotificationCenter.default.post(name: Notification.Name(rawValue: PostsWindowController.ActiveChanged), object: self, userInfo: ["active": windowActive])
         }
     }
     
-    func windowDidBecomeMain(notification: NSNotification) {
+    func windowDidBecomeMain(_ notification: Notification) {
         windowActive = true
         
         if let responder = (window?.contentViewController as? PostTableViewController)?.tableView {
@@ -34,25 +34,25 @@ class PostsWindowController: NSWindowController, NSWindowDelegate {
         }
     }
     
-    func windowDidResignMain(notification: NSNotification) {
+    func windowDidResignMain(_ notification: Notification) {
         windowActive = false
     }
     
     override func windowDidLoad() {
         super.windowDidLoad()
         
-        if let fieldEditor = window?.fieldEditor(true, forObject: nil) as? NSTextView {
+        if let fieldEditor = window?.fieldEditor(true, for: nil) as? NSTextView {
             fieldEditor.linkTextAttributes?[NSForegroundColorAttributeName] = Utils.bodyTextColor
         }
     }
     
-    override func showWindow(sender: AnyObject?) {
+    override func showWindow(_ sender: Any?) {
         defer { super.showWindow(sender) }
         
         if preserveWindowFrame {
             guard let window = window else { return }
             
-            if let frameString = NSUserDefaults.standardUserDefaults().stringForKey("\(windowIdentifier)Frame") {
+            if let frameString = UserDefaults.standard.string(forKey: "\(windowIdentifier)Frame") {
                 window.setFrame(NSRectFromString(frameString), display: true)
             } else {
                 if let screen = window.screen {
@@ -62,10 +62,10 @@ class PostsWindowController: NSWindowController, NSWindowDelegate {
         }
     }
     
-    func windowWillClose(notification: NSNotification) {
+    func windowWillClose(_ notification: Notification) {
         if preserveWindowFrame {
             guard let window = window else { return }
-            NSUserDefaults.standardUserDefaults().setObject(NSStringFromRect(window.frame), forKey: "\(windowIdentifier)Frame")
+            UserDefaults.standard.set(NSStringFromRect(window.frame), forKey: "\(windowIdentifier)Frame")
         }
     }
 

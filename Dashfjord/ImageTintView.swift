@@ -14,7 +14,7 @@ import Cocoa
         didSet { setNeedsDisplay() }
     }
     
-    @IBInspectable var activeTint: NSColor = NSColor.blackColor() {
+    @IBInspectable var activeTint: NSColor = NSColor.black {
         didSet { setNeedsDisplay() }
     }
     
@@ -22,11 +22,11 @@ import Cocoa
         didSet { setNeedsDisplay() }
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
         
         (tintActive ? activeTint : inactiveTint).set()
-        NSRectFillUsingOperation(bounds, NSCompositingOperation.CompositeSourceAtop)
+        NSRectFillUsingOperation(bounds, NSCompositingOperation.sourceAtop)
     }
     
 }

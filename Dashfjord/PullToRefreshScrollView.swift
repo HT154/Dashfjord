@@ -9,8 +9,8 @@
 import Cocoa
 
 protocol PullToRefreshScrollViewTarget {
-    func refresh(sender: AnyObject?)
-    func loadMore(sender: AnyObject?)
+    func refresh(_ sender: AnyObject?)
+    func loadMore(_ sender: AnyObject?)
 }
 
 class PullToRefreshScrollView: NSScrollView {
@@ -36,12 +36,12 @@ class PullToRefreshScrollView: NSScrollView {
             scrollerInsets = originalScrollerInsets
             contentInsets = originalContentInsets
             refreshing = false
-            pullToRefreshIndicator!.hidden = true
+            pullToRefreshIndicator!.isHidden = true
             pullToRefreshIndicator!.stopAnimation(nil)
         }
     }
     
-    override func reflectScrolledClipView(cView: NSClipView) {
+    override func reflectScrolledClipView(_ cView: NSClipView) {
         super.reflectScrolledClipView(cView)
         
         if loaded && documentVisibleRect.origin.y + bounds.size.height - documentView!.bounds.size.height > -loadMoreThreshold {
@@ -49,14 +49,14 @@ class PullToRefreshScrollView: NSScrollView {
         }
     }
     
-    override func scrollWheel(theEvent: NSEvent) {
-        super.scrollWheel(theEvent)
+    override func scrollWheel(with theEvent: NSEvent) {
+        super.scrollWheel(with: theEvent)
         
         guard let refreshIndicator = pullToRefreshIndicator else { return }
         
-        if !refreshing && theEvent.phase == .Began && theEvent.scrollingDeltaY > 0 && verticalScroller!.doubleValue == 0 {
-            refreshIndicator.indeterminate = false
-            refreshIndicator.hidden = false
+        if !refreshing && theEvent.phase == .began && theEvent.scrollingDeltaY > 0 && verticalScroller!.doubleValue == 0 {
+            refreshIndicator.isIndeterminate = false
+            refreshIndicator.isHidden = false
             possiblyRefreshing = true
         }
         
@@ -64,9 +64,9 @@ class PullToRefreshScrollView: NSScrollView {
             refreshIndicator.doubleValue = Double(-documentVisibleRect.origin.y - 24) //pullToRefreshIndicator has min=0 and max=20
         }
         
-        if possiblyRefreshing && !refreshing && theEvent.phase == .Ended {
+        if possiblyRefreshing && !refreshing && theEvent.phase == .ended {
             if -documentVisibleRect.origin.y > 44 {
-                refreshIndicator.indeterminate = true
+                refreshIndicator.isIndeterminate = true
                 refreshIndicator.startAnimation(nil)
                 
                 refreshing = true
@@ -85,11 +85,11 @@ class PullToRefreshScrollView: NSScrollView {
             }
         }
         
-        if theEvent.momentumPhase == .Ended {
+        if theEvent.momentumPhase == .ended {
             possiblyRefreshing = false
             
             if !refreshing {
-                refreshIndicator.hidden = true
+                refreshIndicator.isHidden = true
             }
         }
     }

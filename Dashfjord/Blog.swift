@@ -31,7 +31,7 @@ class Blog: NSObject, ModelType {
     var title: String = ""
     var theme: Theme?
     var type: String?
-    var updated: NSDate?
+    var updated: Date?
     var URL: String?
     
     required init(dict: JSONDict) {
@@ -117,8 +117,8 @@ class Blog: NSObject, ModelType {
             type = s
         }
         
-        if let timestamp = dict["updated"] as? NSTimeInterval {
-            updated = NSDate(timeIntervalSince1970: timestamp)
+        if let timestamp = dict["updated"] as? TimeInterval {
+            updated = Date(timeIntervalSince1970: timestamp)
         }
         
         if let s = dict["url"] as? String {

@@ -43,7 +43,7 @@ class Theme: ModelType {
         bodyFont = dict["body_font"]! as! String
         
         if dict["header_bounds"] is String {
-            let headerComponents = (dict["header_bounds"]! as! String).componentsSeparatedByString(",")
+            let headerComponents = (dict["header_bounds"]! as! String).components(separatedBy: ",")
             if headerComponents.count == 4 {
                 headerBounds = NSRect(x: Int(headerComponents[0])!, y: Int(headerComponents[1])!, width: Int(headerComponents[2])!, height: Int(headerComponents[3])!)
             }

@@ -29,24 +29,24 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         }
     }
     
-    let nib = NSNib(nibNamed: "PostView", bundle: NSBundle.mainBundle())!
+    let nib = NSNib(nibNamed: "PostView", bundle: Bundle.main)!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         scrollView.target = self
         tableView.controller = self
-        tableView.registerNib(nib, forIdentifier: "PostView")
+        tableView.register(nib, forIdentifier: "PostView")
         
         loadMoreSpinner.startAnimation(nil)
         
-        NSNotificationCenter.defaultCenter().addObserverForName(ReachabilityChangedNotification, object: nil, queue: nil) { (note: NSNotification) -> Void in
-            let reachability = note.object as! Reachability
-            
-            if reachability.isReachable() && self.posts.count == 0 {
-                self.refresh(nil)
-            }
-        }
+//        NotificationCenter.default().addObserver(forName: NSNotification.Name(rawValue: ReachabilityChangedNotification), object: nil, queue: nil) { (note: Notification) -> Void in
+//            let reachability = note.object as! Reachability
+//            
+//            if reachability.isReachable() && self.posts.count == 0 {
+//                self.refresh(nil)
+//            }
+//        }
         
         refresh(nil)
     }
@@ -57,17 +57,17 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     func makePostView() -> PostView? {
         var view: PostView?
-        var topLevel: NSArray?
+        var topLevel: NSArray = []
         
-        if nib.instantiateWithOwner(self, topLevelObjects: &topLevel) {
-            for item in topLevel! {
+        if nib.instantiate(withOwner: self, topLevelObjects: &topLevel) {
+            for item in topLevel {
                 if item is PostView {
                     view = item as? PostView
                 }
             }
         }
         
-        NSLayoutConstraint(item: view!, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 664).active = true
+        NSLayoutConstraint(item: view!, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 664).isActive = true
         
         return view
     }
@@ -76,7 +76,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     var loadInProgress = false
     
-    lazy var postViewMapper: (post: Post) -> (PostView, CGFloat) = { (post: Post) -> (PostView, CGFloat) in
+    lazy var postViewMapper: (_ post: Post) -> (PostView, CGFloat) = { (post: Post) -> (PostView, CGFloat) in
         guard let cell = self.makePostView() else { return (PostView(), 0) }
         
         cell.post = post
@@ -89,7 +89,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         return (cell, height)
     }
     
-    lazy var postFilter: (post: Post) -> Bool = { (post: Post) -> Bool in
+    lazy var postFilter: (_ post: Post) -> Bool = { (post: Post) -> Bool in
         if PostFilterManager.sharedInstance.shouldFilter(post) {
             self.filteredPosts += 1
             return false
@@ -100,7 +100,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     // MARK: Refresh
     
-    @IBAction func refresh(sender: AnyObject?) {
+    @IBAction func refresh(_ sender: AnyObject?) {
         if loadInProgress { return }
         loadInProgress = true
         
@@ -116,7 +116,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         scrollView.loaded = true
     }
     
-    lazy var refreshCallback: (posts: [Post]?, error: NSError?) -> Void = { (posts: [Post]?, error: NSError?) in
+    lazy var refreshCallback: (_ posts: [Post]?, _ error: Error?) -> Void = { (posts: [Post]?, error: Error?) in
         self.scrollView.endRefreshing()
         
         if let e = error {
@@ -128,7 +128,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         }
     }
     
-    func replacePosts(newPosts: [Post]) {
+    func replacePosts(_ newPosts: [Post]) {
         canLoadMore = true
         selectedRow = -1
         
@@ -140,7 +140,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         views = posts.map(postViewMapper)
         
         tableView.reloadData()
-        tableView.selectRowIndexes(NSIndexSet(index: 0), byExtendingSelection: false)
+        tableView.selectRowIndexes(IndexSet(integer: 0), byExtendingSelection: false)
         loadInProgress = false
     }
     
@@ -148,7 +148,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     var canLoadMore = true
     
-    func loadMore(sender: AnyObject?) {
+    func loadMore(_ sender: AnyObject?) {
         if loadInProgress || !canLoadMore { return }
         loadInProgress = true
         
@@ -159,7 +159,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         loadInProgress = false
     }
     
-    lazy var loadMoreCallback: (posts: [Post]?, error: NSError?) -> Void = { (posts: [Post]?, error: NSError?) in
+    lazy var loadMoreCallback: (_ posts: [Post]?, _ error: Error?) -> Void = { (posts: [Post]?, error: Error?) in
         if let e = error {
             print("posts load error: \(e)")
             self.loadInProgress = false
@@ -168,7 +168,7 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         }
     }
     
-    func addPosts(newPosts: [Post]?) {
+    func addPosts(_ newPosts: [Post]?) {
         guard let possiblePosts = newPosts else { return }
         
         var actualNewPosts: [Post] = []
@@ -184,8 +184,8 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         if actualNewPosts.count == 0 {
             canLoadMore = false
         } else {
-            posts.insertContentsOf(actualNewPosts, at: posts.count)
-            views.appendContentsOf(actualNewPosts.map(postViewMapper))
+            posts.insert(contentsOf: actualNewPosts, at: posts.count)
+            views.append(contentsOf: actualNewPosts.map(postViewMapper))
             
             tableView.reloadData()
             scrollView.reflectScrolledClipView(scrollView.contentView)
@@ -196,9 +196,9 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     let blankView = NSView()
     
-    func heightForCell(cell: PostView) -> CGFloat {
+    func heightForCell(_ cell: PostView) -> CGFloat {
         sizingWindow.contentView = cell
-        sizingWindow.setFrame(self.sizingWindow.frameRectForContentRect(NSMakeRect(0, 0, cell.fittingSize.width, cell.fittingSize.height)), display: true, animate: false)
+        sizingWindow.setFrame(self.sizingWindow.frameRect(forContentRect: NSMakeRect(0, 0, cell.fittingSize.width, cell.fittingSize.height)), display: true, animate: false)
         
         let height = cell.fittingSize.height
         
@@ -209,36 +209,36 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
     
     // MARK: - Other
     
-    func removePost(post: Post) {
-        let idx = posts.indexOf(post)!
-        posts.removeAtIndex(idx)
+    func removePost(_ post: Post) {
+        let idx = posts.index(of: post)!
+        posts.remove(at: idx)
         views[idx].cell.tearDown()
-        views.removeAtIndex(idx)
+        views.remove(at: idx)
         tableView.reloadData()
         scrollView.reflectScrolledClipView(scrollView.contentView)
     }
     
-    func updateHeight(idx: Int) {
+    func updateHeight(_ idx: Int) {
         views[idx].height = heightForCell(views[idx].cell)
-        tableView.noteHeightOfRowsWithIndexesChanged(NSIndexSet(index: idx))
-        tableView.reloadDataForRowIndexes(NSIndexSet(index: idx), columnIndexes: NSIndexSet(index: 0))
+        tableView.noteHeightOfRows(withIndexesChanged: IndexSet(integer: idx))
+        tableView.reloadData(forRowIndexes: IndexSet(integer: idx), columnIndexes: IndexSet(integer: 0))
     }
     
     // MARK: - NSTableViewDataSource/NSTableViewDelegate
     
-    func tableView(tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
+    func tableView(_ tableView: NSTableView, heightOfRow row: Int) -> CGFloat {
         if row == posts.count { return 32 }
         
         return views[row].height
     }
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         if row == posts.count { return loadMoreView }
         
         return views[row].cell
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return posts.count + (canLoadMore ? 1 : 0)
     }
     
@@ -251,52 +251,52 @@ class PostTableViewController: NSViewController, NSTableViewDelegate, NSTableVie
         }
     }
     
-    func tableViewSelectionDidChange(notification: NSNotification) {
+    func tableViewSelectionDidChange(_ notification: Notification) {
         selectedRow = tableView.selectedRow
     }
     
-    func tableView(tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
         return row != posts.count
     }
     
     // MARK: - Navigation
     
-    @IBAction func nextPost(sender: AnyObject!) {
+    @IBAction func nextPost(_ sender: AnyObject!) {
         if tableView.selectedRow == posts.count - 1 { return }
         
-        tableView.selectRowIndexes(NSIndexSet(index: tableView.selectedRow + 1), byExtendingSelection: false)
-        tableView.scrollRectToVisible(tableView.rectOfRow(tableView.selectedRow))
+        tableView.selectRowIndexes(IndexSet(integer: tableView.selectedRow + 1), byExtendingSelection: false)
+        tableView.scrollToVisible(tableView.rect(ofRow: tableView.selectedRow))
     }
     
-    @IBAction func prevPost(sender: AnyObject!) {
+    @IBAction func prevPost(_ sender: AnyObject!) {
         if tableView.selectedRow == 0 { return }
         
-        tableView.selectRowIndexes(NSIndexSet(index: tableView.selectedRow - 1), byExtendingSelection: false)
-        tableView.scrollRectToVisible(tableView.rectOfRow(tableView.selectedRow))
+        tableView.selectRowIndexes(IndexSet(integer: tableView.selectedRow - 1), byExtendingSelection: false)
+        tableView.scrollToVisible(tableView.rect(ofRow: tableView.selectedRow))
     }
     
-    @IBAction func scrollToTop(sender: AnyObject!) {
-        tableView.scrollRectToVisible(NSMakeRect(0, 0, 1, 1))
+    @IBAction func scrollToTop(_ sender: AnyObject!) {
+        tableView.scrollToVisible(NSMakeRect(0, 0, 1, 1))
     }
     
     // MARK: - First responder redirection
     
     var selectedPost: PostView? {
-        return tableView.viewAtColumn(0, row: tableView.selectedRow, makeIfNecessary: false) as? PostView
+        return tableView.view(atColumn: 0, row: tableView.selectedRow, makeIfNecessary: false) as? PostView
     }
     
-    @IBAction func openBlog(sender: AnyObject!) { selectedPost?.openBlog(sender) }
-    @IBAction func showOnDash(sender: AnyObject!) { selectedPost?.showOnDash(sender) }
-    @IBAction func showNotes(sender: AnyObject!) { selectedPost?.showNotes(sender) }
-    @IBAction func like(sender: AnyObject!) { selectedPost?.like(sender) }
-    @IBAction func reblog(sender: AnyObject!) { selectedPost?.reblog(sender) }
-    @IBAction func reblogQuick(sender: AnyObject!) { selectedPost?.reblogQuick(sender) }
-    @IBAction func reblogQueueQuick(sender: AnyObject!) { selectedPost?.reblogQueueQuick(sender) }
-    @IBAction func share(sender: AnyObject!) { selectedPost?.share(sender) }
-    @IBAction func edit(sender: AnyObject!) { selectedPost?.edit(sender) }
-    @IBAction func deletePost(sender: AnyObject!) { selectedPost?.deletePost(sender) }
-    @IBAction func getInfo(sender: AnyObject!) { selectedPost?.getInfo(sender) }
+    @IBAction func openBlog(_ sender: AnyObject!) { selectedPost?.openBlog(sender) }
+    @IBAction func showOnDash(_ sender: AnyObject!) { selectedPost?.showOnDash(sender) }
+    @IBAction func showNotes(_ sender: AnyObject!) { selectedPost?.showNotes(sender) }
+    @IBAction func like(_ sender: AnyObject!) { selectedPost?.like(sender) }
+    @IBAction func reblog(_ sender: AnyObject!) { selectedPost?.reblog(sender) }
+    @IBAction func reblogQuick(_ sender: AnyObject!) { selectedPost?.reblogQuick(sender) }
+    @IBAction func reblogQueueQuick(_ sender: AnyObject!) { selectedPost?.reblogQueueQuick(sender) }
+    @IBAction func share(_ sender: AnyObject!) { selectedPost?.share(sender) }
+    @IBAction func edit(_ sender: AnyObject!) { selectedPost?.edit(sender) }
+    @IBAction func deletePost(_ sender: AnyObject!) { selectedPost?.deletePost(sender) }
+    @IBAction func getInfo(_ sender: AnyObject!) { selectedPost?.getInfo(sender) }
     
-    @IBAction func homeButton(sender: AnyObject!) { refresh(sender) }
+    @IBAction func homeButton(_ sender: AnyObject!) { refresh(sender) }
     
 }

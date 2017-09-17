@@ -14,17 +14,17 @@ class EnlargedPhotosPageController: NSPageController, NSPageControllerDelegate {
     var indexToSelect = 0
     
     override func viewDidLoad() {
-        NSNotificationCenter.defaultCenter().addObserverForName(NSWindowDidEnterFullScreenNotification, object: view.window, queue: nil) { (notification: NSNotification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.NSWindowDidEnterFullScreen, object: view.window, queue: nil) { (notification: Notification) in
             self.arrangedObjects = self.objectsToShow
             self.selectedIndex = self.indexToSelect
         }
     }
     
-    func pageController(pageController: NSPageController, identifierForObject object: AnyObject) -> String {
+    func pageController(_ pageController: NSPageController, identifierFor object: Any) -> String {
         return ""
     }
     
-    func pageController(pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController {
+    func pageController(_ pageController: NSPageController, viewControllerForIdentifier identifier: String) -> NSViewController {
         let vc = NSViewController()
         let sv = NSScrollView()
         let iv = NSImageView(frame: view.window!.frame)
@@ -41,7 +41,7 @@ class EnlargedPhotosPageController: NSPageController, NSPageControllerDelegate {
         return vc
     }
     
-    func pageController(pageController: NSPageController, prepareViewController viewController: NSViewController, withObject object: AnyObject) {
+    func pageController(_ pageController: NSPageController, prepare viewController: NSViewController, with object: Any?) {
         if let img = object as? Photo {
             PhotoCache.sharedInstance.loadURL(img.URL, into: (viewController.view as! NSScrollView).documentView! as! NSImageView)
         }

@@ -8,11 +8,11 @@
 
 import Foundation
 
-func modelizeSingle<T: ModelType>(raw: JSONDict) -> T {
+func modelizeSingle<T: ModelType>(_ raw: JSONDict) -> T {
     return T(dict: raw)
 }
 
-func modelize<T: ModelType>(raw: [JSONDict]) -> [T] {
+func modelize<T: ModelType>(_ raw: [JSONDict]) -> [T] {
     return raw.map() { (dict: JSONDict) -> T in
         return modelizeSingle(dict)
     }

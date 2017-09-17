@@ -17,7 +17,7 @@ class DashboardWindowController: PostsWindowController {
     @IBOutlet var avatarImageButton: NSButton!
     @IBOutlet var composeButton: NSButton!
     
-    lazy var blogsViewController: BlogsViewController = { return self.storyboard?.instantiateControllerWithIdentifier("blogsViewController") as! BlogsViewController }()
+    lazy var blogsViewController: BlogsViewController = { return self.storyboard?.instantiateController(withIdentifier: "blogsViewController") as! BlogsViewController }()
     
     override var windowIdentifier: String {
         get { return "dashboardWindow" }
@@ -35,14 +35,16 @@ class DashboardWindowController: PostsWindowController {
         
         win.titleBarHeight = 48
         
-        win.titleBarView.addSubview(titleBarView, positioned: .Below, relativeTo: nil)
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view": titleBarView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[view]-0-|", options: [], metrics: nil, views: ["view": titleBarView]))
+        win.titleBarView.addSubview(titleBarView, positioned: .below, relativeTo: nil)
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: [], metrics: nil, views: ["view": titleBarView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: [], metrics: nil, views: ["view": titleBarView]))
         
         win.trafficLightButtonsLeftMargin = 16
         
-        NSNotificationCenter.defaultCenter().addObserverForName(BlogManager.CurrentBlogChanged, object: nil, queue: nil) { (notification: NSNotification) in
-            let blog = notification.object as! Blog
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: BlogManager.CurrentBlogChanged), object: nil, queue: nil) { (notification: Notification) in
+            guard let blog = notification.object as? Blog
+                else { return }
+
             AvatarCache.sharedInstance.loadAvatar(blog.name, size: 64, into: self.avatarImageButton)
         }
     }
@@ -55,12 +57,12 @@ class DashboardWindowController: PostsWindowController {
         }
     }
     
-    func setPostsBadge(string: String?) {
+    func setPostsBadge(_ string: String?) {
         if let str = string {
             newPostsLabel.stringValue = str
-            newPostsBadge.hidden = false
+            newPostsBadge.isHidden = false
         } else {
-            newPostsBadge.hidden = true
+            newPostsBadge.isHidden = true
         }
     }
     
@@ -69,18 +71,18 @@ class DashboardWindowController: PostsWindowController {
         vc.view = self.composeView
         
         let popover = NSPopover()
-        popover.behavior = .Transient
+        popover.behavior = .transient
         popover.contentViewController = vc
         
         return popover
     }()
     
-    @IBAction func composeButton(sender: NSButton!) {
-        composePopover.showRelativeToRect(composeButton.bounds, ofView: composeButton, preferredEdge: .MaxY)
+    @IBAction func composeButton(_ sender: NSButton!) {
+        composePopover.show(relativeTo: composeButton.bounds, of: composeButton, preferredEdge: .maxY)
     }
     
     static let taggedTypes: [PostType] = [.Text, .Photo, .Quote, .Link, .Chat, .Audio, .Video]
-    @IBAction func newPostButton(sender: NSButton!) {
+    @IBAction func newPostButton(_ sender: NSButton!) {
         let blogSelect: String
         if let b = BlogManager.sharedInstance.currentBlogName {
             blogSelect = "/blog/\(b)"
@@ -88,12 +90,12 @@ class DashboardWindowController: PostsWindowController {
             blogSelect = ""
         }
         
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://tumblr.com\(blogSelect)/new/\(DashboardWindowController.taggedTypes[sender.tag].rawValue)")!)
+        NSWorkspace.shared().open(URL(string: "https://tumblr.com\(blogSelect)/new/\(DashboardWindowController.taggedTypes[sender.tag].rawValue)")!)
     }
     
     lazy var userPopover: NSPopover = {
         let popover = NSPopover()
-        popover.behavior = .Transient
+        popover.behavior = .transient
         popover.contentViewController = self.blogsViewController
         
         self.blogsViewController.popover = popover
@@ -101,13 +103,13 @@ class DashboardWindowController: PostsWindowController {
         return popover
     }()
     
-    @IBAction func userButton(sender: NSButton!) {
+    @IBAction func userButton(_ sender: NSButton!) {
         userPopover.contentSize = NSSize(width: blogsViewController.view.bounds.size.width, height: min(window!.frame.size.height - 100, blogsViewController.tableView.rowHeight * CGFloat(BlogManager.sharedInstance.blogs.count)))
         
-        userPopover.showRelativeToRect(sender.bounds, ofView: sender, preferredEdge: .MaxY)
+        userPopover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .maxY)
     }
     
-    @IBAction func homeButton(sender: AnyObject!) {
+    @IBAction func homeButton(_ sender: AnyObject!) {
         (window?.contentViewController?.childViewControllers[0] as? PostTableViewController)?.homeButton(sender)
     }
     

@@ -11,14 +11,14 @@ import Cocoa
 class RoundRectImageButton: NSButton {
 
     @IBInspectable var cornerRadius: CGFloat = 2 {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        NSGraphicsContext.currentContext()?.saveGraphicsState()
+    override func draw(_ dirtyRect: NSRect) {
+        NSGraphicsContext.current()?.saveGraphicsState()
         NSBezierPath(roundedRect: bounds, xRadius: cornerRadius, yRadius: cornerRadius).setClip()
-        super.drawRect(dirtyRect)
-        NSGraphicsContext.currentContext()?.restoreGraphicsState()
+        super.draw(dirtyRect)
+        NSGraphicsContext.current()?.restoreGraphicsState()
     }
     
 }

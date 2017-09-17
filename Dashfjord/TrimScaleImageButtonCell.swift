@@ -10,12 +10,12 @@ import Cocoa
 
 class TrimScaleImageButtonCell: NSCell {
 
-    override func startTrackingAt(startPoint: NSPoint, inView controlView: NSView) -> Bool {
+    override func startTracking(at startPoint: NSPoint, in controlView: NSView) -> Bool {
         (controlView as! TrimScaleImageButton).showShadeView = true
         return true
     }
     
-    override func stopTracking(lastPoint: NSPoint, at stopPoint: NSPoint, inView controlView: NSView, mouseIsUp flag: Bool) {
+    override func stopTracking(last lastPoint: NSPoint, current stopPoint: NSPoint, in controlView: NSView, mouseIsUp flag: Bool) {
         (controlView as! TrimScaleImageButton).showShadeView = false
         
         if flag {
@@ -23,7 +23,7 @@ class TrimScaleImageButtonCell: NSCell {
         }
     }
     
-    override func continueTracking(lastPoint: NSPoint, at currentPoint: NSPoint, inView controlView: NSView) -> Bool {
+    override func continueTracking(last lastPoint: NSPoint, current currentPoint: NSPoint, in controlView: NSView) -> Bool {
         return true
     }
     

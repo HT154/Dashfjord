@@ -14,7 +14,7 @@ import Cocoa
         didSet { reloadImage() }
     }
     
-    @IBInspectable var activeTint: NSColor = NSColor.blackColor() {
+    @IBInspectable var activeTint: NSColor = NSColor.black {
         didSet { reloadImage() }
     }
     
@@ -49,7 +49,7 @@ import Cocoa
         (tintActive ? activeTint : inactiveTint).set()
         
         let imageRect = NSRect(origin: NSZeroPoint, size: templateImage!.size)
-        NSRectFillUsingOperation(imageRect, NSCompositingOperation.CompositeSourceAtop)
+        NSRectFillUsingOperation(imageRect, NSCompositingOperation.sourceAtop)
         
         tinted.unlockFocus()
         

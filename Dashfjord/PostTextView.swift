@@ -21,8 +21,8 @@ class PostTextViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -33,7 +33,7 @@ class PostTextViewController: PostContentViewController {
         
         if let title = post.title {
             if title != "" {
-                stackView.addView(topLine, inGravity: .Center)
+                stackView.addView(topLine, in: .center)
                 
                 if !hideTopLine {
                     let trailHeader = TrailHeaderView()
@@ -46,21 +46,21 @@ class PostTextViewController: PostContentViewController {
                         trailHeader.trail = trail
                     }
                     
-                    stackView.addView(trailHeader, inGravity: .Center, inset: 20)
+                    stackView.addView(trailHeader, inGravity: .center, inset: 20)
                 }
                 
-                stackView.addView(preTitleSpacer, inGravity: .Center)
+                stackView.addView(preTitleSpacer, in: .center)
                 
-                preTitleSpacer.hidden = hideTopLine
-                topLine.hidden = hideTopLine
+                preTitleSpacer.isHidden = hideTopLine
+                topLine.isHidden = hideTopLine
                 
                 let titleLabel = Utils.createResizingLabel()
                 titleLabel.textColor = Utils.bodyTextColor
                 titleLabel.font = Font.get(.Title, size: 32)
                 titleLabel.stringValue = title
                 
-                stackView.addView(titleLabel, inGravity: .Center, inset: 20)
-                stackView.addView(postTitleSpacer, inGravity: .Center)
+                stackView.addView(titleLabel, inGravity: .center, inset: 20)
+                stackView.addView(postTitleSpacer, in: .center)
                 
                 titleHidden = false
             }

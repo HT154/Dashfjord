@@ -29,14 +29,14 @@ class Photo: NSObject, ModelType {
     }
     
     required init(dict: JSONDict) {
-        URL = dict["original_size"]!["url"]! as! String
-        width = dict["original_size"]!["width"]! as! Int
-        height = dict["original_size"]!["height"]! as! Int
+        URL = (dict["original_size"] as! JSONDict)["url"]! as! String
+        width = (dict["original_size"] as! JSONDict)["width"]! as! Int
+        height = (dict["original_size"] as! JSONDict)["height"]! as! Int
         caption = dict["caption"]! as! String
         altSizes = dict["alt_sizes"]! as! [[String:AnyObject]]
     }
     
-    func URLAppropriateForWidth(width: CGFloat) -> String {
+    func URLAppropriateForWidth(_ width: CGFloat) -> String {
         if altSizes.count == 0 {
             return URL
         }

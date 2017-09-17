@@ -12,18 +12,18 @@ class PhotoCache {
 
     static let sharedInstance = PhotoCache()
     
-    private let cache = NSCache()
-    private let URLSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
-    private var recReq: [NSObject:(NSURLSessionDataTask, String)] = [:]
+    private let cache = NSCache<NSString, NSImage>()
+    private let URLSession = Foundation.URLSession(configuration: URLSessionConfiguration.default)
+    private var recReq: [NSObject:(URLSessionDataTask, String)] = [:]
     private var keyRec: [String:[NSObject]] = [:]
-    private var keyReq: [String:NSURLSessionDataTask] = [:]
+    private var keyReq: [String:URLSessionDataTask] = [:]
     
     init() {
         cache.name = "PhotoCache"
     }
     
-    func loadURL(URL: String, into receiver: NSObject) {
-        if let image = cache.objectForKey(URL) as? NSImage {
+    func loadURL(_ URL: String, into receiver: NSObject) {
+        if let image = cache.object(forKey: URL as NSString) {
             putImage(image, into: receiver)
             return
         }
@@ -44,11 +44,11 @@ class PhotoCache {
         } else {
             keyRec[URL] = [receiver]
             
-            let properURL = NSURL(string: URL.stringByReplacingOccurrencesOfString("http://", withString: "https://"))!
+            let properURL = Foundation.URL(string: URL.replacingOccurrences(of: "http://", with: "https://"))!
             
-            let request = NSURLRequest(URL: properURL, cachePolicy: NSURLRequestCachePolicy.ReturnCacheDataElseLoad, timeoutInterval: 30)
-            let task = URLSession.dataTaskWithRequest(request) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
-                dispatch_async(dispatch_get_main_queue()) {
+            let request = URLRequest(url: properURL, cachePolicy: NSURLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 30)
+            let task = URLSession.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
+                DispatchQueue.main.async {
                     if let result = data {
                         let image = NSImage(data: result)
                         
@@ -57,18 +57,18 @@ class PhotoCache {
                         }
                         
                         if image != nil {
-                            self.cache.setObject(image!, forKey: URL)
+                            self.cache.setObject(image!, forKey: URL as NSString)
                         }
                     } else {
                         for rec in self.keyRec[URL]! {
                             self.putImage(nil, into: rec)
                         }
                         
-                        self.cache.removeObjectForKey(URL)
+                        self.cache.removeObject(forKey: URL as NSString)
                     }
                     
-                    self.keyReq.removeValueForKey(URL)
-                    self.keyRec.removeValueForKey(URL)
+                    self.keyReq.removeValue(forKey: URL)
+                    self.keyRec.removeValue(forKey: URL)
                 }
             }
             
@@ -78,7 +78,7 @@ class PhotoCache {
         }
     }
     
-    private func putImage(image: NSImage?, into receiver: NSObject) {
+    private func putImage(_ image: NSImage?, into receiver: NSObject) {
         if receiver is NSImageView {
             (receiver as! NSImageView).image = image
         } else if receiver is NSButton {

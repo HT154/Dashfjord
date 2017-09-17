@@ -13,12 +13,12 @@ class EnlargedPhotosViewController: NSViewController {
     @IBOutlet var pageController: EnlargedPhotosPageController!
     
     override func viewDidLoad() {
-        NSNotificationCenter.defaultCenter().addObserverForName(NSWindowDidExitFullScreenNotification, object: view.window, queue: nil) { (notification: NSNotification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.NSWindowDidExitFullScreen, object: view.window, queue: nil) { (notification: Notification) in
             (notification.object as! NSWindow).close()
         }
     }
     
-    @IBAction func close(sender: AnyObject!) {
+    @IBAction func close(_ sender: AnyObject!) {
         view.window!.toggleFullScreen(sender)
     }
     

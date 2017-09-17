@@ -22,8 +22,8 @@ class PostAnswerViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -31,14 +31,14 @@ class PostAnswerViewController: PostContentViewController {
         
         stackView.removeAllViews()
         
-        stackView.addView(topLine, inGravity: .Center)
-        stackView.addView(topSpacer, inGravity: .Center)
+        stackView.addView(topLine, in: .center)
+        stackView.addView(topSpacer, in: .center)
         
         questionView.question = post.question
         questionView.askingName = post.askingName
         questionView.askingURL = post.askingURL
-        stackView.addView(questionView, inGravity: .Center, inset: 20)
-        stackView.addView(middleSpacer, inGravity: .Center)
+        stackView.addView(questionView, inGravity: .center, inset: 20)
+        stackView.addView(middleSpacer, in: .center)
         
         stackView.addTrail(post.trail, includeFirstHorizontalLine: false)
     }

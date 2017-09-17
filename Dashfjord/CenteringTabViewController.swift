@@ -10,10 +10,10 @@ import Cocoa
 
 class CenteringTabViewController: NSTabViewController {
     
-    override func toolbarDefaultItemIdentifiers(toolbar: NSToolbar) -> [String] {
+    override func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [String] {
         var ids = super.toolbarDefaultItemIdentifiers(toolbar)
         
-        ids.insert(NSToolbarFlexibleSpaceItemIdentifier, atIndex: 0)
+        ids.insert(NSToolbarFlexibleSpaceItemIdentifier, at: 0)
         ids.append(NSToolbarFlexibleSpaceItemIdentifier)
         
         return ids

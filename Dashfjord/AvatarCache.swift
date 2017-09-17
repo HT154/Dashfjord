@@ -12,12 +12,12 @@ class AvatarCache: NSObject {
 
     static let sharedInstance = AvatarCache()
     
-    private let cache = NSCache()
+    private let cache = NSCache<NSString, NSImage>()
     private var recReq: [NSObject:(APIRequest<NSImage>, String)] = [:]
     private var keyRec: [String:[NSObject]] = [:]
     private var keyReq: [String:APIRequest<NSImage>] = [:]
     private let blankImage = NSImage(named: "blank")!
-    private let dummyReceiver = ""
+    private let dummyReceiver = NSObject()
     
     override init() {
         super.init()
@@ -25,16 +25,16 @@ class AvatarCache: NSObject {
         cache.name = "AvatarCache"
     }
     
-    func loadAvatar(blog: String, size: CGFloat, into receiver: NSObject? = nil, imageProcessing: (NSImage -> Void)? = nil) {
+    func loadAvatar(_ blog: String, size: CGFloat, into receiver: NSObject? = nil, imageProcessing: ((NSImage) -> Void)? = nil) {
         var blog = blog
-        let receiver = receiver ?? dummyReceiver
+        let receiver: NSObject = receiver ?? dummyReceiver
         
-        if let dotIdx = blog.rangeOfString(".")?.startIndex {
-            blog = blog.substringToIndex(dotIdx)
+        if let dotIdx = blog.range(of: ".")?.lowerBound {
+            blog = blog.substring(to: dotIdx)
         }
         
         let key = "\(blog)_\(Int(size))"
-        if let image = cache.objectForKey(key) as? NSImage {
+        if let image = cache.object(forKey: key as NSString) {
             putImage(image, into: receiver, imageProcessing: imageProcessing)
             return
         }
@@ -61,17 +61,17 @@ class AvatarCache: NSObject {
                         self.putImage(image, into: rec, imageProcessing: imageProcessing)
                     }
                     
-                    self.cache.setObject(image, forKey: key)
+                    self.cache.setObject(image, forKey: key as NSString)
                 } else {
                     for rec in self.keyRec[key]! {
                         self.putImage(self.blankImage, into: rec, imageProcessing: imageProcessing)
                     }
                     
-                    self.cache.removeObjectForKey(key)
+                    self.cache.removeObject(forKey: key as NSString)
                 }
                 
-                self.keyReq.removeValueForKey(key)
-                self.keyRec.removeValueForKey(key)
+                self.keyReq.removeValue(forKey: key)
+                self.keyRec.removeValue(forKey: key)
             }
             
             keyReq[key] = req
@@ -80,7 +80,7 @@ class AvatarCache: NSObject {
         }
     }
     
-    private func putImage(image: NSImage?, into receiver: NSObject, imageProcessing: (NSImage -> Void)?) {
+    private func putImage(_ image: NSImage?, into receiver: NSObject, imageProcessing: ((NSImage) -> Void)?) {
         if image != nil {
             if let processor = imageProcessing {
                 processor(image!)

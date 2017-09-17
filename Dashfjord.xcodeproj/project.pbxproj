@@ -91,7 +91,6 @@
 		03E59A0A1BBAF65700F31D9A /* PostQuoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E59A091BBAF65700F31D9A /* PostQuoteView.swift */; };
 		03E59A0C1BBB0B5000F31D9A /* PostChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E59A0B1BBB0B5000F31D9A /* PostChatView.swift */; };
 		03E59A0E1BBB181F00F31D9A /* PostVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E59A0D1BBB181F00F31D9A /* PostVideoView.swift */; };
-		03E63D181C223D190074480A /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E63D171C223D190074480A /* Reachability.swift */; };
 		03ED772C1BB1257100599E1B /* WidthStretchingStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03ED772B1BB1257100599E1B /* WidthStretchingStackView.swift */; };
 		03F1A67A1BE9343600B009C5 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 03F1A6791BE9343600B009C5 /* AudioStreamer.m */; };
 		03FF09B01BC6DF6900644175 /* PermalinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03FF09AF1BC6DF6900644175 /* PermalinkButton.swift */; };
@@ -207,7 +206,6 @@
 		03E59A091BBAF65700F31D9A /* PostQuoteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostQuoteView.swift; sourceTree = "<group>"; };
 		03E59A0B1BBB0B5000F31D9A /* PostChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostChatView.swift; sourceTree = "<group>"; };
 		03E59A0D1BBB181F00F31D9A /* PostVideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostVideoView.swift; sourceTree = "<group>"; };
-		03E63D171C223D190074480A /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		03ED772B1BB1257100599E1B /* WidthStretchingStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WidthStretchingStackView.swift; sourceTree = "<group>"; };
 		03F1A6781BE9343600B009C5 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		03F1A6791BE9343600B009C5 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
@@ -423,7 +421,6 @@
 		03E599F01BB7737600F31D9A /* External */ = {
 			isa = PBXGroup;
 			children = (
-				03E63D171C223D190074480A /* Reachability.swift */,
 				03F1A67B1BE9343A00B009C5 /* AudioStreamer */,
 				035F769F1BAE706A00619D61 /* TMTumblrSDK */,
 				030E266D1BD725B700A5F325 /* DTHTMLParser */,
@@ -431,6 +428,7 @@
 				039B7F5B1BF2DBC6003D1750 /* SwiftKeychain */,
 			);
 			name = External;
+			path = ../Frameworks;
 			sourceTree = "<group>";
 		};
 		03E59A011BB8AD8200F31D9A /* Basic Controls and Views */ = {
@@ -581,12 +579,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = HT154;
 				TargetAttributes = {
 					035F76341BADFAC800619D61 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = 49732HS6WQ;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.Keychain = {
 								enabled = 1;
@@ -660,7 +659,6 @@
 				03E59A041BB8B4FF00F31D9A /* PullToRefreshScrollView.swift in Sources */,
 				03707C001BC4125E00CAE4A5 /* AudioPlayerManager.swift in Sources */,
 				03E599FA1BB77E3900F31D9A /* Utils.m in Sources */,
-				03E63D181C223D190074480A /* Reachability.swift in Sources */,
 				0319D6431BF65509008C3CA4 /* FilterPreferencesViewController.swift in Sources */,
 				03C210C01C233ACA00176E0C /* PostsWindowController.swift in Sources */,
 				03707BFE1BC38CD200CAE4A5 /* AudioPlayerView.swift in Sources */,
@@ -753,8 +751,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -797,8 +797,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -828,6 +830,7 @@
 				CODE_SIGN_ENTITLEMENTS = Dashfjord/Dashfjord.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 49732HS6WQ;
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/Dashfjord/Info.plist";
@@ -837,6 +840,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Dashfjord/Dashfjord-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -848,6 +852,7 @@
 				CODE_SIGN_ENTITLEMENTS = Dashfjord/Dashfjord.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 49732HS6WQ;
 				FRAMEWORK_SEARCH_PATHS = "";
 				HEADER_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = "$(SRCROOT)/Dashfjord/Info.plist";
@@ -856,6 +861,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Dashfjord/Dashfjord-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

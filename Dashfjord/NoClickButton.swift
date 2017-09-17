@@ -10,6 +10,6 @@ import Cocoa
 
 class NoClickButton: NSButton {
 
-    override func mouseDown(theEvent: NSEvent) {}
+    override func mouseDown(with theEvent: NSEvent) {}
     
 }

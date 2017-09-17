@@ -10,12 +10,12 @@ import Cocoa
 
 class AuthViewController: NSViewController {
 
-    @IBAction func loginButton(sender: AnyObject!) {
+    @IBAction func loginButton(_ sender: AnyObject!) {
         (NSApp.delegate as! AppDelegate).authorize()
     }
     
-    @IBAction func registerButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "https://www.tumblr.com/register")!)
+    @IBAction func registerButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "https://www.tumblr.com/register")!)
     }
     
 }

@@ -23,8 +23,8 @@ class PostContentViewController: NSViewController {
         super.init(nibName: nil, bundle: nil)!
         
         view = NSView()
-        view.setContentCompressionResistancePriority(NSLayoutPriorityRequired, forOrientation: .Vertical)
-        view.setContentHuggingPriority(NSLayoutPriorityRequired, forOrientation: .Vertical)
+        view.setContentCompressionResistancePriority(NSLayoutPriorityRequired, for: .vertical)
+        view.setContentHuggingPriority(NSLayoutPriorityRequired, for: .vertical)
     }
     
     func configureView() {

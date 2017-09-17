@@ -12,7 +12,7 @@ class PostTableView: NSTableView {
 
     var controller: PostTableViewController?
     
-    override func keyDown(event: NSEvent) {
+    override func keyDown(with event: NSEvent) {
         let flags = event.modifierFlags
         
         switch event.keyCode {
@@ -23,25 +23,25 @@ class PostTableView: NSTableView {
         case 124: // right arrow
             controller?.selectedPost?.scrollTags(true)
         case 125: //down arrow
-            if !flags.contains(.AlternateKeyMask) {
+            if !flags.contains(.option) {
                 scroll(300)
             } else {
                 scroll(enclosingScrollView!.bounds.size.height * 0.75)
             }
         case 126: //up arrow
-            if !flags.contains(.AlternateKeyMask) {
+            if !flags.contains(.option) {
                 scroll(-300)
             } else {
                 scroll(-enclosingScrollView!.bounds.size.height * 0.75)
             }
-        default: super.keyDown(event)
+        default: super.keyDown(with: event)
         }
     }
     
-    func scroll(offset: CGFloat) {
+    func scroll(_ offset: CGFloat) {
         var r = visibleRect
         r.origin.y += offset
-        scrollRectToVisible(r)
+        scrollToVisible(r)
     }
     
 }

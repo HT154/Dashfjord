@@ -19,47 +19,47 @@ class FilterPreferencesViewController: NSViewController, NSTableViewDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        removeButton.enabled = tableView.selectedRowIndexes.count != 0
+        removeButton.isEnabled = tableView.selectedRowIndexes.count != 0
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return filterManager.keywords.count
     }
     
-    func tableView(tableView: NSTableView, objectValueForTableColumn tableColumn: NSTableColumn?, row: Int) -> AnyObject? {
+    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
         return filterManager.keywords[row]
     }
     
-    func tableViewSelectionDidChange(notification: NSNotification) {
-        removeButton.enabled = tableView.selectedRowIndexes.count != 0
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        removeButton.isEnabled = tableView.selectedRowIndexes.count != 0
     }
     
-    func tableView(tableView: NSTableView, rowActionsForRow row: Int, edge: NSTableRowActionEdge) -> [NSTableViewRowAction] {
-        return [NSTableViewRowAction(style: .Destructive, title: "Delete") { (action: NSTableViewRowAction, row: Int) in
-            self.filterManager.keywords.removeAtIndex(row)
+    func tableView(_ tableView: NSTableView, rowActionsForRow row: Int, edge: NSTableRowActionEdge) -> [NSTableViewRowAction] {
+        return [NSTableViewRowAction(style: .destructive, title: "Delete") { (action: NSTableViewRowAction, row: Int) in
+            self.filterManager.keywords.remove(at: row)
             self.tableView.reloadData()
         }]
     }
     
-    @IBAction func edit(sender: NSTextField!) {
-        let row = tableView.rowForView(sender)
+    @IBAction func edit(_ sender: NSTextField!) {
+        let row = tableView.row(for: sender)
         
         if row >= 0 {
             filterManager.keywords[row] = sender.stringValue
-            filterManager.keywords.sortInPlace()
+            filterManager.keywords.sort()
             tableView.reloadData()
         }
     }
     
-    @IBAction func add(sender: AnyObject!) {
-        filterManager.keywords.insert("", atIndex: 0)
+    @IBAction func add(_ sender: AnyObject!) {
+        filterManager.keywords.insert("", at: 0)
         tableView.reloadData()
-        tableView.editColumn(0, row: 0, withEvent: NSApp.currentEvent, select: true)
+        tableView.editColumn(0, row: 0, with: NSApp.currentEvent, select: true)
     }
     
-    @IBAction func remove(sender: AnyObject!) {
-        tableView.selectedRowIndexes.enumerateIndexesWithOptions([.Reverse]) { (row: Int, stop: UnsafeMutablePointer<ObjCBool>) in
-            self.filterManager.keywords.removeAtIndex(row)
+    @IBAction func remove(_ sender: AnyObject!) {
+        for index in tableView.selectedRowIndexes {
+            self.filterManager.keywords.remove(at: index)
         }
         
         tableView.reloadData()

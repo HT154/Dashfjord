@@ -19,8 +19,8 @@ class PostVideoViewController: PostContentViewController {
         
         view.addSubview(stackView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[stackView]-0-|", options: [], metrics: nil, views: ["stackView": stackView]))
     }
     
     override func configureView() {
@@ -31,10 +31,10 @@ class PostVideoViewController: PostContentViewController {
         playerButton.permalinkURL = post.permalinkURL ?? post.postURL
         videoView = playerButton
         
-        let mult = CGFloat(max(1, post.thumbnailWidth!)) / CGFloat(max(1, post.thumbnailHeight!))
+        let mult = CGFloat(max(1, post.thumbnailWidth ?? 1)) / CGFloat(max(1, post.thumbnailHeight ?? 1))
         
-        stackView.addView(videoView!, inGravity: .Center)
-        NSLayoutConstraint(item: videoView!, attribute: .Width, relatedBy: .Equal, toItem: videoView!, attribute: .Height, multiplier: mult, constant: 0).active = true
+        stackView.addView(videoView!, in: .center)
+        NSLayoutConstraint(item: videoView!, attribute: .width, relatedBy: .equal, toItem: videoView!, attribute: .height, multiplier: mult, constant: 0).isActive = true
         
         stackView.addTrail(post.trail, includeFirstHorizontalLine: false)
     }

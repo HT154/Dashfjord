@@ -26,7 +26,7 @@ class TrimScaleImageButton: NSControl {
     private var autoAspect = false
     private var autoWidth = false
     
-    private var linkURL: NSURL?
+    private var linkURL: URL?
     
     override class func cellClass() -> AnyClass? {
         return TrimScaleImageButtonCell.self
@@ -42,63 +42,63 @@ class TrimScaleImageButton: NSControl {
         
         imageView = NSImageView()
         imageView.animates = true
-        imageView.imageScaling = .ScaleProportionallyUpOrDown
+        imageView.imageScaling = .scaleProportionallyUpOrDown
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        aspectConstraint = NSLayoutConstraint(item: imageView, attribute: .Width, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: 1, constant: 0)
-        aspectConstraint.active = true
+        aspectConstraint = NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: 1, constant: 0)
+        aspectConstraint.isActive = true
         
         addSubview(imageView)
         
-        centerXConstraint = NSLayoutConstraint(item: imageView, attribute: .CenterX, relatedBy: .Equal, toItem: self, attribute: .CenterX, multiplier: 1.0, constant: 0)
-        centerYConstraint = NSLayoutConstraint(item: imageView, attribute: .CenterY, relatedBy: .Equal, toItem: self, attribute: .CenterY, multiplier: 1.0, constant: 0)
-        NSLayoutConstraint.activateConstraints([centerXConstraint, centerYConstraint])
+        centerXConstraint = NSLayoutConstraint(item: imageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0)
+        centerYConstraint = NSLayoutConstraint(item: imageView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0)
+        NSLayoutConstraint.activate([centerXConstraint, centerYConstraint])
         
-        horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[imageView]-0-|", options: [], metrics: nil, views: ["imageView": imageView])
-        verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[imageView]-0-|", options: [], metrics: nil, views: ["imageView": imageView])
-        NSLayoutConstraint.activateConstraints(horizontalConstraints)
+        horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[imageView]-0-|", options: [], metrics: nil, views: ["imageView": imageView])
+        verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[imageView]-0-|", options: [], metrics: nil, views: ["imageView": imageView])
+        NSLayoutConstraint.activate(horizontalConstraints)
         
-        wConstraint = NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: 1)
+        wConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 1)
         wConstraint.priority = NSLayoutPriorityDefaultHigh - 1
-        aConstraint = NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: self, attribute: .Height, multiplier: 1, constant: 0)
+        aConstraint = NSLayoutConstraint(item: self, attribute: .width, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1, constant: 0)
         
         shadeView.translatesAutoresizingMaskIntoConstraints = false
         shadeView.color = NSColor(calibratedWhite: 0, alpha: 0.5)
-        shadeView.hidden = true
+        shadeView.isHidden = true
         
         addSubview(shadeView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[shadeView]-0-|", options: [], metrics: nil, views: ["shadeView": shadeView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[shadeView]-0-|", options: [], metrics: nil, views: ["shadeView": shadeView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[shadeView]-0-|", options: [], metrics: nil, views: ["shadeView": shadeView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[shadeView]-0-|", options: [], metrics: nil, views: ["shadeView": shadeView]))
     }
     
     var image: NSImage? {
         set {
             imageView.image = newValue
-            setNeedsDisplayInRect(bounds)
+            setNeedsDisplay(bounds)
             
             if let img = image {
                 let viewAspect = bounds.size.width / bounds.size.height
                 let imageAspect = img.size.width / img.size.height
                 
-                aspectConstraint.active = false
-                aspectConstraint = NSLayoutConstraint(item: imageView, attribute: .Width, relatedBy: .Equal, toItem: imageView, attribute: .Height, multiplier: imageAspect, constant: 0)
-                aspectConstraint.active = true
+                aspectConstraint.isActive = false
+                aspectConstraint = NSLayoutConstraint(item: imageView, attribute: .width, relatedBy: .equal, toItem: imageView, attribute: .height, multiplier: imageAspect, constant: 0)
+                aspectConstraint.isActive = true
                 
                 if autoAspect {
-                    NSLayoutConstraint.activateConstraints(verticalConstraints)
-                    NSLayoutConstraint.activateConstraints(horizontalConstraints)
+                    NSLayoutConstraint.activate(verticalConstraints)
+                    NSLayoutConstraint.activate(horizontalConstraints)
                 } else if viewAspect < imageAspect {
-                    NSLayoutConstraint.deactivateConstraints(horizontalConstraints)
-                    NSLayoutConstraint.activateConstraints(verticalConstraints)
+                    NSLayoutConstraint.deactivate(horizontalConstraints)
+                    NSLayoutConstraint.activate(verticalConstraints)
                 } else {
-                    NSLayoutConstraint.deactivateConstraints(verticalConstraints)
-                    NSLayoutConstraint.activateConstraints(horizontalConstraints)
+                    NSLayoutConstraint.deactivate(verticalConstraints)
+                    NSLayoutConstraint.activate(horizontalConstraints)
                 }
                 
                 if autoWidth {
                     wConstraint.constant = img.size.width
-                    wConstraint.active = true
+                    wConstraint.isActive = true
                 }
             }
             
@@ -115,7 +115,7 @@ class TrimScaleImageButton: NSControl {
         }
     }
     
-    func notifyLayoutChange(view: NSView?) {
+    func notifyLayoutChange(_ view: NSView?) {
         guard let v = view else { return }
         
         if v is PostView {
@@ -128,7 +128,7 @@ class TrimScaleImageButton: NSControl {
     var showShadeView = false {
         didSet {
             if target != nil {
-                shadeView.hidden = !showShadeView
+                shadeView.isHidden = !showShadeView
             }
         }
     }
@@ -137,14 +137,14 @@ class TrimScaleImageButton: NSControl {
         sendAction(action, to: target)
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         if image == nil {
             NSColor(calibratedWhite: 0.9, alpha: 1.0).set()
             NSBezierPath(rect: bounds).fill()
         }
     }
     
-    func setLink(link: NSURL?) {
+    func setLink(_ link: URL?) {
         linkURL = link
         
         if linkURL != nil {
@@ -155,8 +155,8 @@ class TrimScaleImageButton: NSControl {
         }
     }
     
-    @IBAction func openLink(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(linkURL!)
+    @IBAction func openLink(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(linkURL!)
     }
     
 }

@@ -35,12 +35,12 @@ class NotesViewController: NSViewController, NSTableViewDelegate, NSTableViewDat
         }
     }
     
-    func numberOfRowsInTableView(tableView: NSTableView) -> Int {
+    func numberOfRows(in tableView: NSTableView) -> Int {
         return notes.count
     }
     
-    func tableView(tableView: NSTableView, viewForTableColumn tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let view = tableView.makeViewWithIdentifier("noteTableCellView", owner: nil) as! NoteTableCellView
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let view = tableView.make(withIdentifier: "noteTableCellView", owner: nil) as! NoteTableCellView
         view.note = notes[row]
         return view
     }

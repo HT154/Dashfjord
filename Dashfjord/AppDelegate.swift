@@ -16,29 +16,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var storyboard = NSStoryboard(name: "Main", bundle: nil)
     
     var dashboardWindowController: DashboardWindowController!
-    lazy var preferencesWindowController: NSWindowController = { self.storyboard.instantiateControllerWithIdentifier("preferencesWindow") as! NSWindowController }()
-    lazy var authWindowController: NSWindowController = { self.storyboard.instantiateControllerWithIdentifier("authWindow") as! NSWindowController }()
+    lazy var preferencesWindowController: NSWindowController = { self.storyboard.instantiateController(withIdentifier: "preferencesWindow") as! NSWindowController }()
+    lazy var authWindowController: NSWindowController = { self.storyboard.instantiateController(withIdentifier: "authWindow") as! NSWindowController }()
     
-    let reachability: Reachability? = {
-        do {
-            let reachability = try Reachability.reachabilityForInternetConnection()
-            try reachability.startNotifier()
-            
-            return reachability
-        } catch {
-            print("Unable to create/start Reachability")
-        }
-        
-        return nil
-    }()
+//    let reachability: Reachability? = {
+//        do {
+//            let reachability = try Reachability.reachabilityForInternetConnection()
+//            try reachability.startNotifier()
+//            
+//            return reachability
+//        } catch {
+//            print("Unable to create/start Reachability")
+//        }
+//        
+//        return nil
+//    }()
     
     @IBOutlet var blogMenu: NSMenu!
     
-    func applicationDidFinishLaunching(aNotification: NSNotification) {
-        NSAppleEventManager.sharedAppleEventManager().setEventHandler(self, andSelector: #selector(AppDelegate.handleURLEvent(_:withReplyEvent:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
+    func applicationDidFinishLaunching(_ aNotification: Notification) {
+        NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(AppDelegate.handleURLEvent(_:withReplyEvent:)), forEventClass: UInt32(kInternetEventClass), andEventID: UInt32(kAEGetURL))
         
-        API.OAuthConsumerKey = "<consumer_key>"
-        API.OAuthConsumerSecret = "<consumer_secret>"
+        API.OAuthConsumerKey = "QnGtoic9XD0Qc57Rvr31DT2ZNEcqkn187JZH6nFD4TRvy9znTZ"
+        API.OAuthConsumerSecret = "1VvRaoMba9YUriaqBW0xUq8sO8tQShdT39oa5G4l9WfNDRxQIW"
         
         if let (token, tokenSecret) = retrieveTokens() {
             API.OAuthToken = token
@@ -52,16 +52,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func authorize() {
         let auth = TMTumblrAuthenticator.sharedInstance()
-        auth.OAuthConsumerKey = API.OAuthConsumerKey
-        auth.OAuthConsumerSecret = API.OAuthConsumerSecret
+        auth?.oAuthConsumerKey = API.OAuthConsumerKey
+        auth?.oAuthConsumerSecret = API.OAuthConsumerSecret
         
-        auth.authenticate("dashfjord") { (token: String!, tokenSecret: String!, error: NSError!) -> Void in
+        auth?.authenticate("dashfjord") { token, tokenSecret, error in
             if error == nil {
-                self.saveTokens(token, tokenSecret: tokenSecret)
-                API.OAuthToken = token
-                API.OAuthTokenSecret = tokenSecret
+                self.saveTokens(token!, tokenSecret: tokenSecret!)
+                API.OAuthToken = token!
+                API.OAuthTokenSecret = tokenSecret!
                 
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.authWindowController.close()
                     self.launchAfterAuthorization()
                 }
@@ -74,20 +74,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func launchAfterAuthorization() {
         BlogManager.sharedInstance.refresh()
         
-        NSNotificationCenter.defaultCenter().addObserverForName(BlogManager.CurrentBlogChanged, object: nil, queue: nil) { (notification: NSNotification) in
-            let blog = notification.object as! Blog
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: BlogManager.CurrentBlogChanged), object: nil, queue: nil) { (notification: Notification) in
+            guard let blog = notification.object as? Blog
+                else { return }
             
-            for item in self.blogMenu.itemArray {
+            for item in self.blogMenu.items {
                 item.state = item.title == blog.name ? NSOnState : NSOffState
             }
         }
         
-        NSNotificationCenter.defaultCenter().addObserverForName(BlogManager.BlogsLoaded, object: nil, queue: nil) { (notification: NSNotification) in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: BlogManager.BlogsLoaded), object: nil, queue: nil) { (notification: Notification) in
             let blogs = notification.object as! [Blog]
             
             self.blogMenu.removeAllItems()
             
-            for (i, blog) in blogs.enumerate() {
+            for (i, blog) in blogs.enumerated() {
                 let item = NSMenuItem()
                 item.tag = i
                 item.title = blog.name
@@ -99,38 +100,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 
                 if i < 9 {
                     item.keyEquivalent = "\(i + 1)"
-                    item.keyEquivalentModifierMask = Int(NSEventModifierFlags.CommandKeyMask.rawValue | NSEventModifierFlags.AlternateKeyMask.rawValue)
+                    item.keyEquivalentModifierMask = [.command, .option]
                 }
                 
                 self.blogMenu.addItem(item)
             }
         }
         
-        dashboardWindowController = storyboard.instantiateControllerWithIdentifier("dashboardWindow") as! DashboardWindowController
+        dashboardWindowController = storyboard.instantiateController(withIdentifier: "dashboardWindow") as! DashboardWindowController
         dashboardWindowController.showWindow(nil)
     }
     
     // MARK: - User Actions
     
-    @IBAction func showDashboard(sender: AnyObject!) {
+    @IBAction func showDashboard(_ sender: AnyObject!) {
         if API.OAuthToken != "" {
             dashboardWindowController.showWindow(nil)
         }
     }
     
-    @IBAction func showPreferences(sender: AnyObject!) {
+    @IBAction func showPreferences(_ sender: AnyObject!) {
         preferencesWindowController.showWindow(nil)
     }
     
-    @IBAction func changeBlog(sender: NSMenuItem!) {
+    @IBAction func changeBlog(_ sender: NSMenuItem!) {
         BlogManager.sharedInstance.currentBlogName = BlogManager.sharedInstance.blogs[sender.tag].name
     }
     
-    @IBAction func logOut(sender: AnyObject!) {
+    @IBAction func logOut(_ sender: AnyObject!) {
         let alert = NSAlert()
         alert.messageText = "Are you sure you want to log out?"
-        alert.addButtonWithTitle("Cancel")
-        alert.addButtonWithTitle("Log Out")
+        alert.addButton(withTitle: "Cancel")
+        alert.addButton(withTitle: "Log Out")
         
         if alert.runModal() == NSAlertSecondButtonReturn {
             deleteTokens()
@@ -142,15 +143,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Keychain Management
     
     func deleteTokens() {
-        keychain.remove(GenericKey(keyName: "OAuth Token"))
-        keychain.remove(GenericKey(keyName: "OAuth Token Secret"))
+        _ = keychain.remove(GenericKey(keyName: "OAuth Token"))
+        _ = keychain.remove(GenericKey(keyName: "OAuth Token Secret"))
         API.OAuthToken = ""
         API.OAuthTokenSecret = ""
     }
     
-    func saveTokens(token: String, tokenSecret: String) {
-        keychain.add(GenericKey(keyName: "OAuth Token", value: token))
-        keychain.add(GenericKey(keyName: "OAuth Token Secret", value: tokenSecret))
+    func saveTokens(_ token: String, tokenSecret: String) {
+        _ = keychain.add(GenericKey(keyName: "OAuth Token", value: token as NSString?))
+        _ = keychain.add(GenericKey(keyName: "OAuth Token Secret", value: tokenSecret as NSString?))
     }
     
     func retrieveTokens() -> (String, String)? {
@@ -160,8 +161,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return (token, tokenSecret)
     }
     
-    func handleURLEvent(event: NSAppleEventDescriptor, withReplyEvent: NSAppleEventDescriptor) {
-        TMTumblrAuthenticator.sharedInstance().handleOpenURL(NSURL(string: event.paramDescriptorForKeyword(AEKeyword(keyDirectObject))!.stringValue!)!)
+    func handleURLEvent(_ event: NSAppleEventDescriptor, withReplyEvent: NSAppleEventDescriptor) {
+        TMTumblrAuthenticator.sharedInstance().handleOpen(URL(string: event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))!.stringValue!)!)
     }
     
 }

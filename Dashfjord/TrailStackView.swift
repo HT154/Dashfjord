@@ -16,22 +16,22 @@ class TrailStackView: WidthStretchingStackView {
         spacing = 0
     }
     
-    func addTrail(trails: [Trail], includeFirstHorizontalLine: Bool = true, includeFirstTrailHeader: Bool = true) {
-        for (i, trail) in trails.enumerate() {
+    func addTrail(_ trails: [Trail], includeFirstHorizontalLine: Bool = true, includeFirstTrailHeader: Bool = true) {
+        for (i, trail) in trails.enumerated() {
             if i != 0 || includeFirstHorizontalLine {
-                addView(HorizontalLineView(), inGravity: .Center)
+                addView(HorizontalLineView(), in: .center)
             }
             
             if i == 0 && !includeFirstTrailHeader {
                 let view = TrailContentView()
                 view.parseString(trail.content)
                 
-                addView(view, inGravity: .Center)
+                addView(view, in: .center)
             } else {
                 let view = TrailView()
                 view.trail = trail
                 
-                addView(view, inGravity: .Center)
+                addView(view, in: .center)
             }
         }
     }

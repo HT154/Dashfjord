@@ -29,7 +29,7 @@ class TrailHeaderView: NSView {
         translatesAutoresizingMaskIntoConstraints = false
         
         nameButton.bold = true
-        nameButton.color = NSColor.blackColor()
+        nameButton.color = NSColor.black
         actionView.setType(.Reblog)
         
         nameButton.target = self
@@ -41,22 +41,22 @@ class TrailHeaderView: NSView {
         addSubview(nameButton)
         addSubview(actionView)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-0-[avatarButton(24)]-8-[nameButton]", options: [], metrics: nil, views: ["avatarButton": avatarButton, "nameButton": nameButton]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-10-[avatarButton(24)]-3-|", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
-        NSLayoutConstraint(item: nameButton, attribute: .CenterY, relatedBy: .Equal, toItem: avatarButton, attribute: .CenterY, multiplier: 1.0, constant: 0.0).active = true
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[avatarButton(24)]-8-[nameButton]", options: [], metrics: nil, views: ["avatarButton": avatarButton, "nameButton": nameButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[avatarButton(24)]-3-|", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
+        NSLayoutConstraint(item: nameButton, attribute: .centerY, relatedBy: .equal, toItem: avatarButton, attribute: .centerY, multiplier: 1.0, constant: 0.0).isActive = true
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-13-[actionView(14)]", options: [], metrics: nil, views: ["actionView": actionView]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-23-[actionView(14)]", options: [], metrics: nil, views: ["actionView": actionView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-13-[actionView(14)]", options: [], metrics: nil, views: ["actionView": actionView]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-23-[actionView(14)]", options: [], metrics: nil, views: ["actionView": actionView]))
     }
     
     func configureView() {
-        actionView.hidden = trail.rootItem
+        actionView.isHidden = trail.rootItem
         nameButton.title = trail.blog.name
         AvatarCache.sharedInstance.loadAvatar(trail.blog.name, size: 48, into: avatarButton)
     }
     
-    @IBAction func clickBlogButton(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: "http://\(trail.blog.name).tumblr.com/post/\(trail.postID)")!)
+    @IBAction func clickBlogButton(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: "http://\(trail.blog.name).tumblr.com/post/\(trail.postID)")!)
     }
     
 }

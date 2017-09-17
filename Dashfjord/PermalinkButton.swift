@@ -17,7 +17,7 @@ import Cocoa
         trackingRect = addTrackingRect(bounds, owner: self, userData: nil, assumeInside: false)
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         if folded {
             NSColor(white: 193.0/255, alpha: 1).set()
             
@@ -35,22 +35,22 @@ import Cocoa
             }
             
             let clipper = NSBezierPath()
-            clipper.moveToPoint(NSPoint(x: 0, y: 0))
-            clipper.lineToPoint(NSPoint(x: bounds.size.width, y: 0))
-            clipper.lineToPoint(NSPoint(x: bounds.size.width, y: bounds.size.height))
-            clipper.closePath()
+            clipper.move(to: NSPoint(x: 0, y: 0))
+            clipper.line(to: NSPoint(x: bounds.size.width, y: 0))
+            clipper.line(to: NSPoint(x: bounds.size.width, y: bounds.size.height))
+            clipper.close()
             clipper.fill()
         }
     }
     
-    override func mouseEntered(theEvent: NSEvent) {
+    override func mouseEntered(with theEvent: NSEvent) {
         folded = true
-        setNeedsDisplayInRect(bounds)
+        setNeedsDisplay(bounds)
     }
     
-    override func mouseExited(theEvent: NSEvent) {
+    override func mouseExited(with theEvent: NSEvent) {
         folded = false
-        setNeedsDisplayInRect(bounds)
+        setNeedsDisplay(bounds)
     }
     
 }

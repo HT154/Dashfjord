@@ -14,13 +14,13 @@ class QuestionView: NSView {
         didSet {
             if askingName != nil {
                 if askingName != "Anonymous"  {
-                    blogButton.enabled = true
-                    avatarButton.enabled = true
+                    blogButton.isEnabled = true
+                    avatarButton.isEnabled = true
                     
                     AvatarCache.sharedInstance.loadAvatar(askingName, size: 64, into: avatarButton)
                 } else {
-                    blogButton.enabled = false
-                    avatarButton.enabled = false
+                    blogButton.isEnabled = false
+                    avatarButton.isEnabled = false
                     
                     PhotoCache.sharedInstance.loadURL("https://secure.assets.tumblr.com/images/anonymous_avatar_64.gif", into: avatarButton)
                 }
@@ -85,18 +85,18 @@ class QuestionView: NSView {
         addSubview(blogButton)
         addSubview(avatarButton)
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-10-[blogButton]", options: [], metrics: nil, views: ["blogButton": blogButton]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|-10-[questionField]-\(avatarSize + 20)-|", options: [], metrics: nil, views: ["questionField": questionField]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[blogButton]", options: [], metrics: nil, views: ["blogButton": blogButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:|-10-[questionField]-\(avatarSize + 20)-|", options: [], metrics: nil, views: ["questionField": questionField]))
         
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-10-[blogButton]-10-[questionField]-10-|", options: [], metrics: nil, views: ["blogButton": blogButton, "questionField": questionField]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-10-[blogButton]-10-[questionField]-10-|", options: [], metrics: nil, views: ["blogButton": blogButton, "questionField": questionField]))
         
-        NSLayoutConstraint(item: avatarButton, attribute: .Width, relatedBy: .Equal, toItem: avatarButton, attribute: .Height, multiplier: 1, constant: 0).active = true
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:[avatarButton(\(avatarSize))]-0-|", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
-        NSLayoutConstraint.activateConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|-0-[avatarButton]", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
+        NSLayoutConstraint(item: avatarButton, attribute: .width, relatedBy: .equal, toItem: avatarButton, attribute: .height, multiplier: 1, constant: 0).isActive = true
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "H:[avatarButton(\(avatarSize))]-0-|", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
+        NSLayoutConstraint.activate(NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[avatarButton]", options: [], metrics: nil, views: ["avatarButton": avatarButton]))
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
 
         NSColor(calibratedWhite: (245.0/255), alpha: 1.0).setFill()
         NSColor(calibratedWhite: (217.0/255), alpha: 1.0).setStroke()
@@ -108,18 +108,18 @@ class QuestionView: NSView {
         boxPath.stroke()
         
         let arrowPath = NSBezierPath()
-        arrowPath.moveToPoint(NSPoint(x: boxFrame.size.width, y: boxFrame.size.height - 10))
-        arrowPath.lineToPoint(NSPoint(x: boxFrame.size.width + 5, y: boxFrame.size.height - 15))
-        arrowPath.lineToPoint(NSPoint(x: boxFrame.size.width, y: boxFrame.size.height - 20))
+        arrowPath.move(to: NSPoint(x: boxFrame.size.width, y: boxFrame.size.height - 10))
+        arrowPath.line(to: NSPoint(x: boxFrame.size.width + 5, y: boxFrame.size.height - 15))
+        arrowPath.line(to: NSPoint(x: boxFrame.size.width, y: boxFrame.size.height - 20))
         arrowPath.stroke()
-        arrowPath.lineToPoint(NSPoint(x: boxFrame.size.width - 2, y: boxFrame.size.height - 20))
-        arrowPath.lineToPoint(NSPoint(x: boxFrame.size.width - 2, y: boxFrame.size.height - 10))
-        arrowPath.closePath()
+        arrowPath.line(to: NSPoint(x: boxFrame.size.width - 2, y: boxFrame.size.height - 20))
+        arrowPath.line(to: NSPoint(x: boxFrame.size.width - 2, y: boxFrame.size.height - 10))
+        arrowPath.close()
         arrowPath.fill()
     }
     
-    @IBAction func openAskingURL(sender: AnyObject!) {
-        NSWorkspace.sharedWorkspace().openURL(NSURL(string: askingURL)!)
+    @IBAction func openAskingURL(_ sender: AnyObject!) {
+        NSWorkspace.shared().open(URL(string: askingURL)!)
     }
     
 }

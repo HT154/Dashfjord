@@ -15,7 +15,7 @@ class VerticalSpacer: NSView {
         super.init(frame: NSZeroRect)
         
         translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint(item: self, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: height).active = true
+        NSLayoutConstraint(item: self, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: height).isActive = true
     }
     
 }

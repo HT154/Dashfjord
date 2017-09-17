@@ -39,10 +39,10 @@ class NoteTableCellView: NSTableCellView {
         set {
             super.backgroundStyle = newValue
             
-            if newValue == .Dark {
-                noteLabel.textColor = NSColor.whiteColor()
+            if newValue == .dark {
+                noteLabel.textColor = NSColor.white
             } else {
-                noteLabel.textColor = NSColor.blackColor()
+                noteLabel.textColor = NSColor.black
             }
         }
         get { return super.backgroundStyle }

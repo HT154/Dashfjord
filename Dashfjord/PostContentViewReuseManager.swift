@@ -23,14 +23,14 @@ class PostContentViewReuseManager: NSObject {
         .Answer: (PostAnswerViewController.self, []),
     ]
     
-    func viewControllerRetiredForType(type: PostType, view: PostContentViewController) {
+    func viewControllerRetiredForType(_ type: PostType, view: PostContentViewController) {
         types[type]!.views.append(view)
     }
     
-    func viewControllerForType(type: PostType) -> PostContentViewController {
+    func viewControllerForType(_ type: PostType) -> PostContentViewController {
         if types[type]!.views.count > 0 {
             let retViewController = types[type]!.views.first!
-            types[type]!.views.removeAtIndex(0)
+            types[type]!.views.remove(at: 0)
             retViewController.view.prepareForReuse()
             
             return retViewController
@@ -39,7 +39,7 @@ class PostContentViewReuseManager: NSObject {
         return makeViewWithType(type)
     }
     
-    private func makeViewWithType<T: PostContentViewController>(type: PostType) -> T! {
+    private func makeViewWithType<T: PostContentViewController>(_ type: PostType) -> T! {
         return (types[type]!.viewClass as PostContentViewController.Type).init() as! T
     }
     

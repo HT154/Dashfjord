@@ -1,29 +1,34 @@
 //
-//  GenericKey.swift
+//  ArchiveKey.swift
 //  SwiftKeychain
 //
-//  Created by Yanko Dimitrov on 11/12/14.
+//  Created by Yanko Dimitrov on 11/13/14.
 //  Copyright (c) 2014 Yanko Dimitrov. All rights reserved.
 //
 
 import Foundation
 
-public class GenericKey: BaseKey {
+public class ArchiveKey: BaseKey {
     
-    public var value: NSString?
+    public var object: NSCoding?
     
-    private var secretData: NSData? {
+    private var secretData: Data? {
         
-        return value?.dataUsingEncoding(NSUTF8StringEncoding)
+        if let objectToArchive = object {
+            
+            return NSKeyedArchiver.archivedData(withRootObject: objectToArchive)
+        }
+        
+        return nil
     }
     
     ///////////////////////////////////////////////////////
     // MARK: - Initializers
     ///////////////////////////////////////////////////////
     
-    public init(keyName: String, value: NSString? = nil) {
+    public init(keyName: String, object: NSCoding? = nil) {
         
-        self.value = value
+        self.object = object
         super.init(name: keyName)
     }
     
@@ -31,7 +36,7 @@ public class GenericKey: BaseKey {
     // MARK: - KeychainItem
     ///////////////////////////////////////////////////////
     
-    public override func makeQueryForKeychain(keychain: KeychainService) -> KeychainQuery {
+    public override func makeQueryForKeychain(_ keychain: KeychainService) -> KeychainQuery {
         
         let query = KeychainQuery(keychain: keychain)
         
@@ -47,15 +52,14 @@ public class GenericKey: BaseKey {
         var fields = [NSObject: AnyObject]()
         
         if let data = secretData {
-            
-            fields[kSecValueData as String] = data
+            fields[kSecValueData as NSString] = data as AnyObject?
         }
         
         return fields
     }
     
-    public override func unlockData(data: NSData) {
+    public override func unlockData(_ data: Data) {
         
-        value = NSString(data: data, encoding: NSUTF8StringEncoding)
+        object = NSKeyedUnarchiver.unarchiveObject(with: data) as? NSCoding
     }
 }

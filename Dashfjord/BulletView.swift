@@ -11,11 +11,11 @@ import Cocoa
 class BulletView: NSView {
 
     @IBInspectable var fill = true {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
     @IBInspectable var color = Utils.bodyTextColor {
-        didSet { setNeedsDisplayInRect(bounds) }
+        didSet { setNeedsDisplay(bounds) }
     }
     
     required init?(coder: NSCoder) { super.init(coder: coder) }
@@ -24,12 +24,12 @@ class BulletView: NSView {
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    override func drawRect(dirtyRect: NSRect) {
-        super.drawRect(dirtyRect)
+    override func draw(_ dirtyRect: NSRect) {
+        super.draw(dirtyRect)
 
         color.set()
         
-        let rect = NSBezierPath(ovalInRect: NSMakeRect(1, bounds.size.height - 15, 5, 5))
+        let rect = NSBezierPath(ovalIn: NSMakeRect(1, bounds.size.height - 15, 5, 5))
         rect.stroke()
         
         if fill {

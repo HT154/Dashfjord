@@ -8,13 +8,13 @@
 
 import Cocoa
 
-typealias JSONDict = [String:AnyObject]
+typealias JSONDict = [String:Any]
 
 class API {
     
     static let baseURL = "https://api.tumblr.com/v2/"
     
-    static let URLSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+    static let URLSession = Foundation.URLSession(configuration: URLSessionConfiguration.default)
     
     static var OAuthConsumerKey = ""
     static var OAuthConsumerSecret = ""
@@ -28,41 +28,41 @@ class API {
     // MARK: - Convenience Methods
     // MARK: User
     
-    class func info(callback: (info: JSONDict?, blogs: [Blog]?, error: NSError?) -> Void) {
+    class func info(_ callback: @escaping (_ info: JSONDict?, _ blogs: [Blog]?, _ error: Error?) -> Void) {
         infoRequest(callback).send()
     }
     
-    class func dashboard(parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) {
+    class func dashboard(_ parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) {
         dashboardRequest(parameters, callback: callback).send()
     }
     
-    class func likes(parameters: [String:AnyObject] = [:], callback: (count: Int?, posts: [Post]?, error: NSError?) -> Void) {
+    class func likes(_ parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ posts: [Post]?, _ error: Error?) -> Void) {
         likesRequest(parameters, callback: callback).send()
     }
     
-    class func following(parameters: [String:AnyObject] = [:], callback: (count: Int?, following: [Blog]?, error: NSError?) -> Void) {
+    class func following(_ parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ following: [Blog]?, _ error: Error?) -> Void) {
         followingRequest(parameters, callback: callback).send()
     }
     
-    class func follow(blog: String, callback: (error: NSError?) -> Void) {
+    class func follow(_ blog: String, callback: @escaping (_ error: Error?) -> Void) {
         followRequest(blog, callback: callback).send()
     }
     
-    class func unfollow(blog: String, callback: (error: NSError?) -> Void) {
+    class func unfollow(_ blog: String, callback: @escaping (_ error: Error?) -> Void) {
         unfollowRequest(blog, callback: callback).send()
     }
     
-    class func like(id: Int, reblogKey: String, callback: (error: NSError?) -> Void) {
+    class func like(_ id: Int, reblogKey: String, callback: @escaping (_ error: Error?) -> Void) {
         likeRequest(id, reblogKey: reblogKey, callback: callback).send()
     }
     
-    class func unlike(id: Int, reblogKey: String, callback: (error: NSError?) -> Void) {
+    class func unlike(_ id: Int, reblogKey: String, callback: @escaping (_ error: Error?) -> Void) {
         unlikeRequest(id, reblogKey: reblogKey, callback: callback).send()
     }
     
     // MARK: Blog
     
-    class func avatar(blog blog: String, size: CGFloat, callback: (avatar: NSImage?, error: NSError?) -> Void) {
+    class func avatar(blog: String, size: CGFloat, callback: @escaping (_ avatar: NSImage?, _ error: Error?) -> Void) {
         avatarRequest(blog, size: size, callback: callback).send()
     }
     
@@ -70,21 +70,21 @@ class API {
     
     // followers
     
-    class func posts(blog blog: String, type: PostType? = nil, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, blog: Blog?, error: NSError?) -> Void) {
+    class func posts(blog: String, type: PostType? = nil, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ blog: Blog?, _ error: Error?) -> Void) {
         postsRequest(blog, type: type, parameters: parameters, callback: callback).send()
     }
     
-    class func queue(blog blog: String, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) {
+    class func queue(blog: String, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) {
         queueRequest(blog, parameters: parameters, callback: callback).send()
     }
     
-    class func drafts(blog blog: String, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) {
+    class func drafts(blog: String, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) {
         draftsRequest(blog, parameters: parameters, callback: callback).send()
     }
     
     // submissions
     
-    class func likes(blog blog: String, parameters: [String:AnyObject] = [:], callback: (count: Int?, posts: [Post]?, error: NSError?) -> Void) {
+    class func likes(blog: String, parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ posts: [Post]?, _ error: Error?) -> Void) {
         likesRequest(blog: blog, parameters: parameters, callback: callback).send()
     }
     
@@ -94,128 +94,128 @@ class API {
     
     // edit
     
-    class func reblog(blog: String, id: Int, reblogKey: String, comment: String? = nil, parameters: [String:AnyObject] = [:], callback: (error: NSError?) -> Void) {
+    class func reblog(_ blog: String, id: Int, reblogKey: String, comment: String? = nil, parameters: [String:Any] = [:], callback: @escaping (_ error: Error?) -> Void) {
         reblogRequest(blog, id: id, reblogKey: reblogKey, comment: comment, parameters: parameters, callback: callback).send()
     }
     
-    class func delete(blog: String, id: Int, callback: (error: NSError?) -> Void) {
+    class func delete(_ blog: String, id: Int, callback: @escaping (_ error: Error?) -> Void) {
         deleteRequest(blog, id: id, callback: callback).send()
     }
     
     // MARK: Tagging
     
-    class func tagged(tag: String, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) {
+    class func tagged(_ tag: String, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) {
         taggedRequest(tag, parameters: parameters, callback: callback).send()
     }
     
     // MARK: Private
     
-    class func notes(blog: String, id: Int, beforeTimestamp: Int? = nil, callback: (notes: [Note]?, error: NSError?) -> Void) {
+    class func notes(_ blog: String, id: Int, beforeTimestamp: Int? = nil, callback: @escaping (_ notes: [Note]?, _ error: Error?) -> Void) {
         notesRequest(blog, id: id, beforeTimestamp: beforeTimestamp, callback: callback).send()
     }
     
     // MARK: - Request Methods
     // MARK: User
     
-    class func infoRequest(callback: (info: [String:AnyObject]?, blogs: [Blog]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("info") { (result: JSONDict?, error: NSError?) in
+    class func infoRequest(_ callback: @escaping (_ info: [String:Any]?, _ blogs: [Blog]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("info") { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(info: nil, blogs: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 var info = response["user"]! as! JSONDict
                 let blogs: [Blog] = modelize(info["blogs"]! as! [JSONDict])
-                info.removeValueForKey("blogs")
+                info.removeValue(forKey: "blogs")
                 
-                callback(info: info, blogs: blogs, error: nil)
+                callback(info, blogs, nil)
             }
         }
         
         return request
     }
     
-    class func dashboardRequest(parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("dashboard", parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func dashboardRequest(_ parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("dashboard", parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(posts: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let posts: [Post] = modelize(response["posts"]! as! [JSONDict])
                 
-                callback(posts: posts, error: nil)
+                callback(posts, nil)
             }
         }
         
         return request
     }
     
-    class func likesRequest(parameters: [String:AnyObject] = [:], callback: (count: Int?, posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("likes", parameters:  parameters) { (result: JSONDict?, error: NSError?) in
+    class func likesRequest(_ parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("likes", parameters:  parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(count: nil, posts: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let count = response["liked_count"]! as? Int
                 let posts: [Post] = modelize(response["liked_posts"]! as! [JSONDict])
                 
-                callback(count: count, posts: posts, error: nil)
+                callback(count, posts, nil)
             }
         }
         
         return request
     }
     
-    class func followingRequest(parameters: [String:AnyObject] = [:], callback: (count: Int?, following: [Blog]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("following", parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func followingRequest(_ parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ following: [Blog]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("following", parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(count: nil, following: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let count = response["total_blogs"] as? Int
                 let following: [Blog] = modelize(response["blogs"] as! [JSONDict])
                 
-                callback(count: count, following: following, error: nil)
+                callback(count, following, nil)
             }
         }
         
         return request
     }
     
-    class func followRequest(blog: String, callback: (error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("follow", parameters: ["url": fullURL(blog)]) { (result: JSONDict?, error: NSError?) in
-            callback(error: collateErrors(result, error))
+    class func followRequest(_ blog: String, callback: @escaping (_ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("follow", parameters: ["url": fullURL(blog)]) { (result: JSONDict?, error: Error?) in
+            callback(collateErrors(result, error))
         }
-        request.method = .Post
+        request.method = .post
         
         return request
     }
     
-    class func unfollowRequest(blog: String, callback: (error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("unfollow", parameters: ["url": fullURL(blog)]) { (result: JSONDict?, error: NSError?) in
-            callback(error: collateErrors(result, error))
+    class func unfollowRequest(_ blog: String, callback: @escaping (_ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("unfollow", parameters: ["url": fullURL(blog)]) { (result: JSONDict?, error: Error?) in
+            callback(collateErrors(result, error))
         }
-        request.method = .Post
+        request.method = .post
         
         return request
     }
     
-    class func likeRequest(id: Int, reblogKey: String, callback: (error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("like", parameters: ["id": id, "reblog_key": reblogKey]) { (result: JSONDict?, error: NSError?) in
-            callback(error: collateErrors(result, error))
+    class func likeRequest(_ id: Int, reblogKey: String, callback: @escaping (_ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("like", parameters: ["id": id, "reblog_key": reblogKey]) { (result: JSONDict?, error: Error?) in
+            callback(collateErrors(result, error))
         }
-        request.method = .Post
+        request.method = .post
         
         return request
     }
     
-    class func unlikeRequest(id: Int, reblogKey: String, callback: (error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("unlike", parameters: ["id": id, "reblog_key": reblogKey]) { (result: JSONDict?, error: NSError?) in
-            callback(error: collateErrors(result, error))
+    class func unlikeRequest(_ id: Int, reblogKey: String, callback: @escaping (_ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("unlike", parameters: ["id": id, "reblog_key": reblogKey]) { (result: JSONDict?, error: Error?) in
+            callback(collateErrors(result, error))
         }
-        request.method = .Post
+        request.method = .post
         
         return request
     }
     
     // MARK: Blog
     
-    class func avatarRequest(blog: String, size: CGFloat, callback: (avatar: NSImage?, error: NSError?) -> Void) -> APIRequest<NSImage> {
+    class func avatarRequest(_ blog: String, size: CGFloat, callback: @escaping (_ avatar: NSImage?, _ error: Error?) -> Void) -> APIRequest<NSImage> {
         let request = APIRequest("avatar", blog: blog, parameters: ["size": size], callback: callback)
         
         return request
@@ -225,15 +225,15 @@ class API {
     
     // followersRequest
     
-    class func postsRequest(blog: String, type: PostType? = nil, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, blog: Blog?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("posts", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func postsRequest(_ blog: String, type: PostType? = nil, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ blog: Blog?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("posts", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(posts: nil, blog: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let posts: [Post] = modelize(response["posts"]! as! [JSONDict])
                 let blog: Blog = modelizeSingle(response["blog"]! as! JSONDict)
                 
-                callback(posts: posts, blog: blog, error: nil)
+                callback(posts, blog, nil)
             }
         }
         
@@ -244,28 +244,28 @@ class API {
         return request
     }
     
-    class func queueRequest(blog: String, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("posts/queue", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func queueRequest(_ blog: String, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("posts/queue", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(posts: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let posts: [Post] = modelize(response["posts"]! as! [JSONDict])
                 
-                callback(posts: posts, error: nil)
+                callback(posts, nil)
             }
         }
         
         return request
     }
     
-    class func draftsRequest(blog: String, parameters: [String:AnyObject] = [:], callback: (posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("posts/draft", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func draftsRequest(_ blog: String, parameters: [String:Any] = [:], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("posts/draft", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(posts: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let posts: [Post] = modelize(response["posts"]! as! [JSONDict])
                 
-                callback(posts: posts, error: nil)
+                callback(posts, nil)
             }
         }
         
@@ -274,15 +274,15 @@ class API {
     
     // submissionsRequest
     
-    class func likesRequest(blog blog: String, parameters: [String:AnyObject] = [:], callback: (count: Int?, posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("likes", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
+    class func likesRequest(blog: String, parameters: [String:Any] = [:], callback: @escaping (_ count: Int?, _ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("likes", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(count: nil, posts: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let count = response["liked_count"]! as? Int
                 let posts: [Post] = modelize(response["liked_posts"]! as! [JSONDict])
                 
-                callback(count: count, posts: posts, error: nil)
+                callback(count, posts, nil)
             }
         }
         
@@ -295,7 +295,7 @@ class API {
     
     // editRequest
     
-    class func reblogRequest(blog: String, id: Int, reblogKey: String, comment: String?, parameters: [String:AnyObject], callback: (error: NSError?) -> Void) ->
+    class func reblogRequest(_ blog: String, id: Int, reblogKey: String, comment: String?, parameters: [String:Any], callback: @escaping (_ error: Error?) -> Void) ->
         APIRequest<JSONDict> {
             var parameters = parameters
             parameters["id"] = id
@@ -305,58 +305,58 @@ class API {
                 parameters["comment"] = c
             }
             
-            let request = APIRequest("post/reblog", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
-                callback(error: collateErrors(result, error))
+            let request = APIRequest("post/reblog", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
+                callback(collateErrors(result, error))
             }
-            request.method = .Post
+            request.method = .post
             
             return request
     }
     
-    class func deleteRequest(blog: String, id: Int, callback: (error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        let request = APIRequest("post/delete", blog: blog, parameters: ["id": id]) { (result: JSONDict?, error: NSError?) in
-            callback(error: collateErrors(result, error))
+    class func deleteRequest(_ blog: String, id: Int, callback: @escaping (_ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        let request = APIRequest("post/delete", blog: blog, parameters: ["id": id]) { (result: JSONDict?, error: Error?) in
+            callback(collateErrors(result, error))
         }
-        request.method = .Post
+        request.method = .post
         
         return request
     }
     
     // MARK: Tagging
     
-    class func taggedRequest(tag: String, parameters: [String:AnyObject], callback: (posts: [Post]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
+    class func taggedRequest(_ tag: String, parameters: [String:Any], callback: @escaping (_ posts: [Post]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
         var parameters = parameters
         parameters["tag"] = tag
         
-        let request = APIRequest("tagged", parameters: parameters) { (result: JSONDict?, error: NSError?) in
+        let request = APIRequest("tagged", parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(posts: nil, error: error)
+                callback(nil, error)
             } else if let response = result?["response"] {
                 let posts: [Post] = modelize(response as! [JSONDict])
                 
-                callback(posts: posts, error: nil)
+                callback(posts, nil)
             }
         }
-        request.type = .Raw
+        request.type = .raw
         
         return request
     }
     
     // MARK: Private
     
-    class func notesRequest(blog: String, id: Int, beforeTimestamp: Int?, callback: (notes: [Note]?, error: NSError?) -> Void) -> APIRequest<JSONDict> {
-        var parameters: [String:AnyObject] = ["id": id]
+    class func notesRequest(_ blog: String, id: Int, beforeTimestamp: Int?, callback: @escaping (_ notes: [Note]?, _ error: Error?) -> Void) -> APIRequest<JSONDict> {
+        var parameters: [String:Any] = ["id": id]
         if let timestamp = beforeTimestamp {
             parameters["before_timestamp"] = timestamp
         }
         
-        let request = APIRequest("notes", blog: blog, parameters: parameters) { (result: JSONDict?, error: NSError?) in
+        let request = APIRequest("notes", blog: blog, parameters: parameters) { (result: JSONDict?, error: Error?) in
             if let error = collateErrors(result, error) {
-                callback(notes: nil, error: error)
-            } else if let response = result?["response"] {
+                callback(nil, error)
+            } else if let response = result?["response"] as? JSONDict {
                 let notes: [Note] = modelize(response["notes"]! as! [JSONDict])
                 
-                callback(notes: notes, error: nil)
+                callback(notes, nil)
             }
         }
         
@@ -365,15 +365,15 @@ class API {
     
     // MARK: - Utilities
     
-    class func fullURL(blog: String) -> String {
-        if blog.containsString(".") {
+    class func fullURL(_ blog: String) -> String {
+        if blog.contains(".") {
             return blog
         }
         
         return "\(blog).tumblr.com"
     }
     
-    class func collateErrors(result: JSONDict?, _ error: NSError?) -> NSError? {
+    class func collateErrors(_ result: JSONDict?, _ error: Error?) -> Error? {
         if error != nil { return error }
         
         if let meta = result?["meta"] as! JSONDict? {

@@ -12,12 +12,12 @@ class PostScrollView: PullToRefreshScrollView {
     
     var prev = Set<Int>()
     
-    override func reflectScrolledClipView(cView: NSClipView) {
+    override func reflectScrolledClipView(_ cView: NSClipView) {
         super.reflectScrolledClipView(cView)
         
         guard let tableView = documentView as? NSTableView else { return }
         
-        let visible = tableView.rowsInRect(tableView.visibleRect)
+        let visible = tableView.rows(in: tableView.visibleRect)
         
         // Selection
         
@@ -30,7 +30,7 @@ class PostScrollView: PullToRefreshScrollView {
                 newIndex = visible.location + visible.length - 1
             }
             
-            tableView.selectRowIndexes(NSIndexSet(index: newIndex), byExtendingSelection: false)
+            tableView.selectRowIndexes(IndexSet(integer: newIndex), byExtendingSelection: false)
         }
         
         // Visibility
@@ -40,24 +40,24 @@ class PostScrollView: PullToRefreshScrollView {
             curr.insert(visible.location + i)
         }
         
-        let lost = prev.subtract(curr)
-        let found = curr.subtract(prev)
+        let lost = prev.subtracting(curr)
+        let found = curr.subtracting(prev)
         
         for idx in lost {
             if idx < tableView.numberOfRows {
-                (tableView.viewAtColumn(0, row: idx, makeIfNecessary: false) as? PostView)?.willDisappear()
+                (tableView.view(atColumn: 0, row: idx, makeIfNecessary: false) as? PostView)?.willDisappear()
             }
         }
         
         for idx in found {
             if idx < tableView.numberOfRows {
-                (tableView.viewAtColumn(0, row: idx, makeIfNecessary: false) as? PostView)?.willAppear()
+                (tableView.view(atColumn: 0, row: idx, makeIfNecessary: false) as? PostView)?.willAppear()
             }
         }
         
         for idx in curr {
             if idx < tableView.numberOfRows {
-                (tableView.viewAtColumn(0, row: idx, makeIfNecessary: false) as? PostView)?.positionChanged()
+                (tableView.view(atColumn: 0, row: idx, makeIfNecessary: false) as? PostView)?.positionChanged()
             }
         }
         

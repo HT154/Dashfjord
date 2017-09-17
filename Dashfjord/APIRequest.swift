@@ -9,8 +9,8 @@
 import Cocoa
 
 enum HTTPMethod {
-    case Get
-    case Post
+    case get
+    case post
 }
 
 enum AuthenticationType: String {
@@ -20,23 +20,23 @@ enum AuthenticationType: String {
 }
 
 enum APICallType {
-    case Blog(String)
-    case User
-    case Raw
+    case blog(String)
+    case user
+    case raw
 }
 
 class APIRequest<T>: NSObject {
     
-    private var task: NSURLSessionDataTask?
+    private var task: URLSessionDataTask?
     
-    var method = HTTPMethod.Get
+    var method = HTTPMethod.get
     var auth = AuthenticationType.OAuth
-    var type = APICallType.User
+    var type = APICallType.user
     
     var endpointSuffix: String? = nil
     var endpoint = ""
-    var parameters: [String:AnyObject] = [:]
-    var callback: ((result: T?, error: NSError?) -> Void)?
+    var parameters: [String:Any] = [:]
+    var callback: ((_ result: T?, _ error: Error?) -> Void)?
     
     var customHeaders: [String:String] = [:]
     
@@ -46,36 +46,36 @@ class APIRequest<T>: NSObject {
     
     convenience init(_ endpoint: String, blog: String) {
         self.init(endpoint)
-        self.type = .Blog(blog)
+        self.type = .blog(blog)
     }
     
-    convenience init(_ endpoint: String, parameters: [String:AnyObject]) {
+    convenience init(_ endpoint: String, parameters: [String:Any]) {
         self.init(endpoint)
         self.parameters = parameters
     }
     
-    convenience init(_ endpoint: String, blog: String, parameters: [String:AnyObject]) {
+    convenience init(_ endpoint: String, blog: String, parameters: [String:Any]) {
         self.init(endpoint)
-        self.type = .Blog(blog)
+        self.type = .blog(blog)
         self.parameters = parameters
     }
     
-    convenience init(_ endpoint: String, callback: (result: T?, error: NSError?) -> Void) {
+    convenience init(_ endpoint: String, callback: @escaping (_ result: T?, _ error: Error?) -> Void) {
         self.init(endpoint)
         self.callback = callback
     }
     
-    convenience init(_ endpoint: String, blog: String, callback: (result: T?, error: NSError?) -> Void) {
+    convenience init(_ endpoint: String, blog: String, callback: @escaping (_ result: T?, _ error: Error?) -> Void) {
         self.init(endpoint, blog: blog)
         self.callback = callback
     }
     
-    convenience init(_ endpoint: String, parameters: [String:AnyObject], callback: (result: T?, error: NSError?) -> Void) {
+    convenience init(_ endpoint: String, parameters: [String:Any], callback: @escaping (_ result: T?, _ error: Error?) -> Void) {
         self.init(endpoint, parameters: parameters)
         self.callback = callback
     }
     
-    convenience init(_ endpoint: String, blog: String, parameters: [String:AnyObject], callback: (result: T?, error: NSError?) -> Void) {
+    convenience init(_ endpoint: String, blog: String, parameters: [String:Any], callback: @escaping (_ result: T?, _ error: Error?) -> Void) {
         self.init(endpoint, blog: blog, parameters: parameters)
         self.callback = callback
     }
@@ -91,7 +91,7 @@ class APIRequest<T>: NSObject {
         }
         
         var urlString = API.baseURL + subURL() + endpoint
-        let request = NSMutableURLRequest()
+        var request = URLRequest(url: URL(string: urlString)!)
         request.setValue("HTTumblrAPI", forHTTPHeaderField: "User-Agent")
         
         if auth == .Key || auth == .OAuth {
@@ -103,47 +103,47 @@ class APIRequest<T>: NSObject {
         }
         
         switch method {
-        case .Get:
-            request.HTTPMethod = "GET"
+        case .get:
+            request.httpMethod = "GET"
             urlString += "?" + parametersAsString()
-        case .Post:
-            request.HTTPMethod = "POST"
+        case .post:
+            request.httpMethod = "POST"
             
-            let bodyData = parametersAsString().stringByReplacingOccurrencesOfString("%20", withString: "+").dataUsingEncoding(NSUTF8StringEncoding)!
-            request.HTTPBody = bodyData
+            let bodyData = parametersAsString().replacingOccurrences(of: "%20", with: "+").data(using: String.Encoding.utf8)!
+            request.httpBody = bodyData
             
             request.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
-            request.setValue("\(bodyData.length)", forHTTPHeaderField: "Content-Length")
+            request.setValue("\(bodyData.count)", forHTTPHeaderField: "Content-Length")
         }
         
-        let url = NSURL(string: urlString)!
-        request.URL = url
+        let url = URL(string: urlString)!
+        request.url = url
         
         if auth == .OAuth {
-            request.setValue(TMOAuth.headerForURL(url, method: request.HTTPMethod, postParameters: parameters, nonce: NSProcessInfo.processInfo().globallyUniqueString, consumerKey: API.OAuthConsumerKey, consumerSecret: API.OAuthConsumerSecret, token: API.OAuthToken, tokenSecret: API.OAuthTokenSecret), forHTTPHeaderField: "Authorization")
+            request.setValue(TMOAuth.header(for: url, method: request.httpMethod, postParameters: parameters, nonce: ProcessInfo.processInfo.globallyUniqueString, consumerKey: API.OAuthConsumerKey, consumerSecret: API.OAuthConsumerSecret, token: API.OAuthToken, tokenSecret: API.OAuthTokenSecret), forHTTPHeaderField: "Authorization")
         }
         
         for (key, value) in customHeaders {
             request.setValue(value, forHTTPHeaderField: key)
         }
         
-        task = API.URLSession.dataTaskWithRequest(request) { (data: NSData?, response: NSURLResponse?, error: NSError?) in
-            dispatch_async(dispatch_get_main_queue()) {
+        task = API.URLSession.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
                 if error != nil || data == nil {
-                    self.callback?(result: nil, error: error)
+                    self.callback?(nil, error)
                     return
                 }
                 
                 if T.self == NSImage.self {
-                    self.callback?(result: NSImage(data: data!) as? T, error: nil)
-                } else if T.self == NSData.self {
-                    self.callback?(result: data as? T, error: nil)
+                    self.callback?(NSImage(data: data!) as? T, nil)
+                } else if T.self == Data.self {
+                    self.callback?(data as? T, nil)
                 } else {
                     do {
-                        let result: T = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as! T
-                        self.callback?(result: result, error: nil)
-                    } catch let error as NSError {
-                        self.callback?(result: nil, error: error)
+                        let result: T = try JSONSerialization.jsonObject(with: data!, options: []) as! T
+                        self.callback?(result, nil)
+                    } catch let error {
+                        self.callback?(nil, error)
                     }
                 }
             }
@@ -154,49 +154,48 @@ class APIRequest<T>: NSObject {
     private func parametersAsString() -> String {
         let params = NSMutableArray()
         
-        for key in parameters.keys.sort() {
+        for key in parameters.keys.sorted() {
             addPair(key, value: parameters[key]!, array: params)
         }
         
-        return params.componentsJoinedByString("&")
+        return params.componentsJoined(by: "&")
     }
     
-    private func addPair(key: String, value: AnyObject, array: NSMutableArray) {
+    private func addPair(_ key: String, value: Any, array: NSMutableArray) {
         switch parseType(value) {
         case "Array":
-            for val in value as! [AnyObject] {
+            for val in value as! [Any] {
                 addPair(key, value: val, array: array)
             }
         case "Dictionary":
-            let dict = value as! [String:AnyObject]
-            for subKey in dict.keys.sort() {
+            let dict = value as! [String:Any]
+            for subKey in dict.keys.sorted() {
                 addPair("\(key)[\(subKey)]", value: dict[key]!, array: array)
             }
         default:
-            let val = encodedString("\(value)")
-            array.addObject("\(key)=\(val)")
+            array.add("\(key)=\(encodedString("\(value)")!)")
         }
     }
     
-    private func parseType<U>(input: U) -> String {
+    private func parseType<U>(_ input: U) -> String {
         return ""
     }
     
-    private func parseType<U>(input: Array<U>) -> String {
+    private func parseType<U>(_ input: Array<U>) -> String {
         return "Array"
     }
     
-    private func parseType<U, V>(input: Dictionary<U, V>) -> String {
+    private func parseType<U, V>(_ input: Dictionary<U, V>) -> String {
         return "Dictionary"
     }
     
     private func subURL() -> String {
         switch type {
-        case .User:
+        case .user:
             return "user/"
-        case .Blog(let url):
+        case .blog(let url):
             return "blog/\(API.fullURL(url))/"
-        case .Raw:
+        case .raw:
             return ""
         }
     }

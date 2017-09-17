@@ -11,11 +11,11 @@ import Cocoa
 @IBDesignable class TumblrButton: NSButton {
     
     let color = NSColor(calibratedRed: 64.0/255, green: 139.0/255, blue: 195.0/255, alpha: 1)
-    let textColor = NSColor.whiteColor()
+    let textColor = NSColor.white
     let textFont = Font.get(weight: .Bold, size: 16)
     let center: NSParagraphStyle = {
         let style = NSMutableParagraphStyle()
-        style.alignment = NSCenterTextAlignment
+        style.alignment = .center
         
         return style
     }()
@@ -31,11 +31,11 @@ import Cocoa
         attributedTitle = NSAttributedString(string: title, attributes: [NSFontAttributeName: textFont, NSForegroundColorAttributeName: textColor, NSParagraphStyleAttributeName: center])
     }
     
-    override func drawRect(dirtyRect: NSRect) {
+    override func draw(_ dirtyRect: NSRect) {
         color.set()
         NSBezierPath(roundedRect: bounds, xRadius: 2, yRadius: 2).fill()
         
-        super.drawRect(dirtyRect)
+        super.draw(dirtyRect)
     }
     
 }
